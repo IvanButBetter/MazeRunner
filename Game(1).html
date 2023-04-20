@@ -2,16 +2,48 @@
 <html lang="en"> 
   <head>
     <title>Maze Runner</title> 
+    <style>
+      @charset "utf-8";
+      /* CSS Document */
+      html,
+      html {
+        background-color: #383837;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      #Code {
+        position: relative;
+        top: 0;
+        right: 0;
+        width: 60%;
+        height: 100%;
+        background-color: #383837;
+        color: #fff;
+        overflow: auto;
+        z-index: 100;
+      }
+      #embed {
+        position: relative;
+        top: 150px;
+        right: 0;
+        width: 60%;
+        height: 100%;
+        background-color: #383837;
+        color: #fff;
+        overflow: auto;
+        z-index: 100;
+      }
+    </style>
   </head>
   <body>
     <canvas id="mycanvas"></canvas> 
     <div id="Code">
-      <h1>Code</h1>
-      <p>Add code here</p>
+      <h1 id="head">Source Code</h1>
+      <p>Embed script done by <a href="https://EmGithub.com">EmGithub.com</a></p>
       <pre>
         <code>
-          <!-- add Path: Game.html -->
+          <script id="embd" src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2FIvanButBetter%2FMazeRunner%2Fblob%2Fmain%2FGame%281%29.html&style=atom-one-dark&type=code&showLineNumbers=on&showFullPath=on&showCopy=on"></script>
     </div>
+
   </body>
   <!-- processing.js lib from KhanAcademy -->
   <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script> 
@@ -33,6 +65,8 @@
         var x = 0;
         var y = 0;
         var health = 1;
+        var timer = 30;
+        var isPlaying = false;
         // Buttons
         var b1 = {
           x: 300,
@@ -80,7 +114,7 @@
           fill(0, 0, 0);
           rect(wall.x, wall.y, wall.width, wall.height, wall.rounding);
           if (mouseX <= wall.x && mouseY <= wall.y);
-            var health = 0;
+            health = 0;
         };
         var winbox = function(win) {
           fill(0, 0, 0);
@@ -123,18 +157,17 @@
         };
         // Mouse controls
         function draw() {
-          background(99, 99, 99);
-          var x = (mouseX);
-          var y = (mouseY);
-          fill(0, 0, 0);
-          ellipse (x, y, 50, 50);
-          text(x, y, 50, 50);
+          if (isPlaying) {
+            timer--;
+            if (timer <= 0) {
+              health = 0; // set the player's health to 0 if the timer reaches 0
+            }
+          }
+
         }
         // Dead Screen
         var gameend = function() {
           scene = 666;
-          font = loadFont("Fantasy.otf")
-          textFont(font, 128)
           background(0, 0, 0);
           textSize(75)
           fill(255, 0, 0)
@@ -150,8 +183,9 @@
           scene = 3
           background(98, 98, 98);
           walls(Aw1); walls(Aw2); walls(Aw3); walls(Aw4); walls(Aw5); walls(Aw6);
+          timer = 30;
         }
-        // Level 1 walls
+          // Level 1 walls
         var Aw1 = {
           x: 0,
           y: 0,
@@ -188,12 +222,13 @@
           width: 800,
           height: -500,
         }
-      // Game Code
-        gameend();
+    //Game
+      // Death code
+        Setup();
 
-       // if (health <= 0) {
-       //   GameEnd();
-       // }
+      //  if (health <= 0) { // This code is problematic - it causes the game to display but not accept input
+         // GameEnd();
+       
 
         //Scene Changing
         if(scene === 1 || scene === 2 || scene === 0) {
@@ -202,21 +237,33 @@
               tutorial();
             } else if(MCC(b1)) {
               level1();
+              isPlaying = true;
             }
           };
+        };
         if(scene === 666) {
-          if (MCC(b2)) {
-            tutorial();
-          } else if (MCC(b3)) {
-            Setup();
-          }
-        };
-          
+          mouseClicked = function() {
+            if (MCC(b2)) {
+              level1();
+              isPlaying = true;
+            } else if (MCC(b3)) {
+              location.reload();
+            };
+          };
           // Last brackets DNI
-          }
+          };
         };
-        
-      };
+        };
+    // };
+      // Notes
+      // Scene 1 = Title Screen
+      // Scene 2 = Tutorial
+      // Scene 3 = Level 1
+      // Scene 666 = Game Over
+      // Walls Aw1 through Aw6 are level 1 walls
+      // Btn 1 is the "Start" button
+      // Btn 2 is the "Try Again" button
+      // Btn 3 is the "Title Screen" button
     var canvas = document.getElementById("mycanvas"); 
     var processingInstance = new Processing(canvas, programCode); 
   </script>
