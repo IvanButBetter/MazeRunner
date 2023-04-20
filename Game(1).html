@@ -1,0 +1,223 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+  <head>
+    <title>Maze Runner</title> 
+  </head>
+  <body>
+    <canvas id="mycanvas"></canvas> 
+    <div id="Code">
+      <h1>Code</h1>
+      <p>Add code here</p>
+      <pre>
+        <code>
+          <!-- add Path: Game.html -->
+    </div>
+  </body>
+  <!-- processing.js lib from KhanAcademy -->
+  <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script> 
+  <script>
+    var programCode = function(processingInstance) {
+      with (processingInstance) {
+        size(800, 800); 
+        frameRate(30);
+
+        // Certain Debugging things
+
+        PFont.list(); {
+          console.log("Font List:", PFont.list())
+        }
+
+      // Variables
+        var StartButton = 0;
+        var scene = 0;
+        var x = 0;
+        var y = 0;
+        var health = 1;
+        // Buttons
+        var b1 = {
+          x: 300,
+          y: 650,
+          width: 150,
+          height: 75,
+          rounding: 10,
+          fill: 0,
+          textSize: 30,
+          text: "Start"
+        }
+        var b2 = {
+          x: 200,
+          y: 650,
+          width: 150,
+          height: 75,
+          rounding: 10,
+          fill: 254,
+          textSize: 30,
+          text: "Try Again"
+        }
+        var b3 = {
+          x: 500,
+          y: 650,
+          width: 150,
+          height: 75,
+          rounding: 10,
+          fill: 254,
+          textSize: 28,
+          text: "Title Screen"
+        }
+
+        // function to draw all my buttons cleanly
+        var btnGen = function(btn) {
+            fill(btn.fill);
+            rect(btn.x, btn.y, btn.width, btn.height, btn.rounding);
+            textSize(btn.textSize);
+            fill(0);
+            textAlign(CENTER, CENTER);
+            text(btn.text, btn.x + btn.width / 2, btn.y + btn.height / 2);
+        };
+
+        // Hitbox rectangles
+        var walls = function(wall) {
+          fill(0, 0, 0);
+          rect(wall.x, wall.y, wall.width, wall.height, wall.rounding);
+          if (mouseX <= wall.x && mouseY <= wall.y);
+            var health = 0;
+        };
+        var winbox = function(win) {
+          fill(0, 0, 0);
+          rect(win.x, win.y, win.width, win.height, win.rounding);
+          if (mouseX <= win.x && mouseY <= win.y);
+        };
+        //First scene, title screen
+        var Setup = function() {
+          scene = 1;
+          background(252, 161, 3);
+          fill(255, 255, 255);
+          textSize(75);
+          text("Maze Runner", 200, 400);
+          textSize(45);
+          text("Click anywhere to start", 225, 500);
+        };
+        // Call while scene 1 and mouseclicked, make sure button is clicked to continue to game
+        var tutorial = function() {
+          scene = 2;
+          textAlign(LEFT, TOP);
+          background(252, 161, 3);
+          fill(0, 0, 0);
+          textSize(75);
+          text("How to Play", 50, 100);
+          textSize(35);
+          text("Your character follows your mouse", 50, 200);
+          text("Do not hit the black walls", 50, 250);
+          text("Do not stand still, the incoming walls will kill you!", 50, 300);
+          textSize(75);
+          text("Objective", 50, 420);
+          textSize(35);
+          text("With your mouse, guide the boy to the end of the maze.", 50, 500, 600, 700);
+          btnGen(b1);
+        };
+        //Button input checks
+        var MCC = function(btn) {
+            console.log("MouseX:", mouseX, "MouseY:", mouseY); // debugging line
+            console.log("btn:", btn);
+            return (mouseX >= btn.x && mouseX <= (btn.x + btn.width) && mouseY >= btn.y && mouseY <= (btn.y + btn.height));
+        };
+        // Mouse controls
+        function draw() {
+          background(99, 99, 99);
+          var x = (mouseX);
+          var y = (mouseY);
+          fill(0, 0, 0);
+          ellipse (x, y, 50, 50);
+          text(x, y, 50, 50);
+        }
+        // Dead Screen
+        var gameend = function() {
+          scene = 666;
+          font = loadFont("Fantasy.otf")
+          textFont(font, 128)
+          background(0, 0, 0);
+          textSize(75)
+          fill(255, 0, 0)
+          text("You Died", 250, 350)
+          textSize(45)
+          text("Try Again?", 300, 450)
+          btnGen(b2)
+          btnGen(b3)
+
+        }
+        // Game level 1
+        var level1 = function() {
+          scene = 3
+          background(98, 98, 98);
+          walls(Aw1); walls(Aw2); walls(Aw3); walls(Aw4); walls(Aw5); walls(Aw6);
+        }
+        // Level 1 walls
+        var Aw1 = {
+          x: 0,
+          y: 0,
+          width: 250,
+          height: 100,
+        }
+        var Aw2 = {
+          x: 0,
+          y: 400,
+          width: 700,
+          height: 150,
+        }
+        var Aw3 = {
+          x: 500,
+          y: 690,
+          width: 900,
+          height: 300,
+        }
+        var Aw4 = {
+          x: 0,
+          y: 400,
+          width: 250,
+          height: 500,
+        }
+        var Aw5 = {
+          x: 800,
+          y: 200,
+          width: -630,
+          height: 100,
+        }
+        var Aw6 = {
+          x: 400,
+          y: 210,
+          width: 800,
+          height: -500,
+        }
+      // Game Code
+        gameend();
+
+       // if (health <= 0) {
+       //   GameEnd();
+       // }
+
+        //Scene Changing
+        if(scene === 1 || scene === 2 || scene === 0) {
+          mouseClicked = function() {
+            if(scene === 1) {
+              tutorial();
+            } else if(MCC(b1)) {
+              level1();
+            }
+          };
+        if(scene === 666) {
+          if (MCC(b2)) {
+            tutorial();
+          } else if (MCC(b3)) {
+            Setup();
+          }
+        };
+          
+          // Last brackets DNI
+          }
+        };
+        
+      };
+    var canvas = document.getElementById("mycanvas"); 
+    var processingInstance = new Processing(canvas, programCode); 
+  </script>
+</html>
