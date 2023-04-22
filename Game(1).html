@@ -51,10 +51,9 @@
     var programCode = function(processingInstance) {
       with (processingInstance) {
         size(800, 800); 
-        frameRate(30);
+        frameRate(244);
 
         // Certain Debugging things
-
         PFont.list(); {
           console.log("Font List:", PFont.list())
         }
@@ -62,11 +61,12 @@
       // Variables
         var StartButton = 0;
         var scene = 0;
-        var x = 0;
-        var y = 0;
+        var x = mouseX;
+        var y = mouseY;
         var health = 1;
         var timer = 30;
         var isPlaying = false;
+        var img;
         // Buttons
         var b1 = {
           x: 300,
@@ -151,6 +151,7 @@
           textSize(45);
           text("Click anywhere to start", 225, 500);
           keyPressed();
+          img = loadImage("characterLarge.png");
         };
         // Call while scene 1 and mouseclicked, make sure button is clicked to continue to game
         var tutorial = function() {
@@ -190,13 +191,21 @@
             return (mouseX >= btn.x && mouseX <= (btn.x + btn.width) && mouseY >= btn.y && mouseY <= (btn.y + btn.height));
         };
         var wallColl = function(wall){
-
+          if (isPlaying === true && mouseX <= wall.x && mouseY <= wall.y);
+            health = -10;
+        };
+        var winColl = function(win) {
+          if (isPlaying === true && mouseX <= win.x && mouseY <= win.y);
+            level2();
         };
 
         // Mouse controls
-        function draw() {
+        draw = function() {
           if (isPlaying === true) {
-            line(mouseX, 50, mouseX, 80);
+            imageMode(CENTER)
+            image(img, mouseX, mouseY, 50, 50);
+          } else if (isPlaying === true && mouseX <= (wall.x + wall.width) && mouseY <= (wall.y + wall.height)); {
+            health = -10;
           };
         };
         // Dead Screen
@@ -217,9 +226,9 @@
           scene = 3
           background(98, 98, 98);
           walls(Aw1); walls(Aw2); walls(Aw3); walls(Aw4); walls(Aw5); walls(Aw6);
+          wallColl(Aw1); wallColl(Aw2); wallColl(Aw3); wallColl(Aw4); wallColl(Aw5); wallColl(Aw6);
           timer = 30;
-          winbox(win1)
-          var isPlaying = true;
+          winbox(win1);
         };
           // Level 1 walls
         var Aw1 = {
@@ -317,25 +326,26 @@
         }
     //Game 
         
-// LOOK HERE IF YOU ACCIDENTALLY ENTERED THE DEVELOPER GUI 
-      Setup(); // Change this to Setup(); , in case you see anything other than Setup() here.
+//  LOOK HERE IF YOU ACCIDENTALLY ENTERED THE DEVELOPER GUI 
+      Setup(); // ! Change this to Setup(); , in case you see anything other than Setup() here.
       
-      //  if (health <= 0) { // This code is problematic - it causes the game to display but not accept input
-         // GameEnd();
+        if (health <= 0) { // This code is problematic - it causes the game to display but not accept input
+          GameEnd();
+        };
         
 
         //Title Screens Changing
         if(scene === 1 || scene === 2 || scene === 0) {
           mouseClicked = function() {
-            if(scene === 1) {
+            if(scene === 1) { // Main Menu
               tutorial();
-            } else if(MCC(b1)) {
-              level2();
+            } else if(MCC(b1)) { // Start Button
+              level1();
               isPlaying = true;
             };
           };
         };
-        if(scene === 666) {
+        if(scene === 666) { // Dead Screen
           mouseClicked = function() {
             if (MCC(b2)) {
               level1();
@@ -346,7 +356,7 @@
           };
           // Levels
         if (scene === 3 || scene === 4 || scene === 5 || scene === 6 || scene === 7 || scene === 8 || scene === 9 || scene === 10) {
-          if (scene === 3) {
+          if (scene === 3) { // Level 1 to 2
             if (mouseX <= (win.x + win.width) && mouseY <= win.y (win.y + win.height)) {
               level2();
             };
