@@ -21,27 +21,23 @@
         overflow: auto;
         z-index: 100;
       }
-      #embed {
-        position: relative;
-        top: 150px;
-        right: 0;
-        width: 60%;
-        height: 100%;
-        background-color: #383837;
-        color: #fff;
-        overflow: auto;
-        z-index: 100;
-      }
+
     </style>
   </head>
   <body>
     <canvas id="mycanvas"></canvas> 
     <div id="Code">
+      <div id="text"
       <h1 id="head">Source Code</h1>
       <p>Embed script done by <a href="https://EmGithub.com">EmGithub.com</a></p>
+      </div>
+      <div id="embed">
       <pre>
         <code>
           <script id="embd" src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2FIvanButBetter%2FMazeRunner%2Fblob%2Fmain%2FGame%281%29.html&style=atom-one-dark&type=code&showLineNumbers=on&showFullPath=on&showCopy=on"></script>
+        </code>
+      </pre>
+      </div>
     </div>
 
   </body>
@@ -51,7 +47,8 @@
     var programCode = function(processingInstance) {
       with (processingInstance) {
         size(800, 800); 
-        frameRate(244);
+        frameRate(60);
+        
 
         // Certain Debugging things
         PFont.list(); {
@@ -61,12 +58,11 @@
       // Variables
         var StartButton = 0;
         var scene = 0;
-        var x = mouseX;
-        var y = mouseY;
-        var health = 1;
+        var health = 5;
         var timer = 30;
         var isPlaying = false;
         var img;
+
         // Buttons
         var b1 = {
           x: 300,
@@ -126,15 +122,15 @@
             fill(0);
             textAlign(CENTER, CENTER);
             text(btn.text, btn.x + btn.width / 2, btn.y + btn.height / 2);
-            stroke(btn.stroke)
         };
 
         // Hitbox rectangles
         var walls = function(wall) {
           fill(16, 16, 16);
           rect(wall.x, wall.y, wall.width, wall.height, wall.rounding);
-          if (mouseX <= wall.x && mouseY <= wall.y);
+          if (mouseX <= wall.x && mouseY <= wall.y) {
             health = 0;
+          };
         };
         var winbox = function(win) {
           fill(30, 188, 30);
@@ -152,6 +148,7 @@
           text("Click anywhere to start", 225, 500);
           keyPressed();
           img = loadImage("characterLarge.png");
+          health = 5;
         };
         // Call while scene 1 and mouseclicked, make sure button is clicked to continue to game
         var tutorial = function() {
@@ -180,7 +177,7 @@
           text("Scene: " + scene, 10, 40);
           text("If you got here by accident, please refresh the page.", 10, 60);
           text("If the issue persists, check line 300 of the code.", 10, 80);
-          text("If the function there is anything EXCEPT Setup(), change it to Setup();", 10, 100)
+          text("If the function there is anything EXCEPT Setup(), change it to Setup();", 10, 100);
           btnGen(b1); btnGen(b2); btnGen(b3); btnGen(b4); btnGen(b999A); btnGen(b999B);
         };
 
@@ -191,7 +188,7 @@
             return (mouseX >= btn.x && mouseX <= (btn.x + btn.width) && mouseY >= btn.y && mouseY <= (btn.y + btn.height));
         };
         var wallColl = function(wall){
-          if (isPlaying === true && mouseX <= wall.x && mouseY <= wall.y);
+          if (mouseX <= wall.x && mouseY <= wall.y);
             health = -10;
         };
         var winColl = function(win) {
@@ -202,28 +199,32 @@
         // Mouse controls
         draw = function() {
           if (isPlaying === true) {
-            imageMode(CENTER)
+            imageMode(CENTER);
             image(img, mouseX, mouseY, 50, 50);
-          } else if (isPlaying === true && mouseX <= (wall.x + wall.width) && mouseY <= (wall.y + wall.height)); {
-            health = -10;
+
+        //    if (health <= 0) {
+          //    gameend();
+        //    } else if (mouseX <= (wall.x + wall.width) && mouseY <= (wall.y + wall.height)) {
+          //      health = health - 10;
+          //  };
           };
         };
         // Dead Screen
         var gameend = function() {
           scene = 666;
           background(0, 0, 0);
-          textSize(75)
-          fill(255, 0, 0)
-          text("You Died", 250, 350)
-          textSize(45)
-          text("Try Again?", 300, 450)
-          btnGen(b2)
-          btnGen(b3)
+          textSize(75);
+          fill(255, 0, 0);
+          text("You Died", 250, 350);
+          textSize(45);
+          text("Try Again?", 300, 450);
+          btnGen(b2);
+          btnGen(b3);
 
         };
         // Game level 1
         var level1 = function() {
-          scene = 3
+          scene = 3;
           background(98, 98, 98);
           walls(Aw1); walls(Aw2); walls(Aw3); walls(Aw4); walls(Aw5); walls(Aw6);
           wallColl(Aw1); wallColl(Aw2); wallColl(Aw3); wallColl(Aw4); wallColl(Aw5); wallColl(Aw6);
@@ -263,7 +264,7 @@
         };
         var Aw6 = {
           x: 400,
-          y: 210,
+          y: 200,
           width: 800,
           height: -500,
         };
@@ -327,11 +328,7 @@
     //Game 
         
 //  LOOK HERE IF YOU ACCIDENTALLY ENTERED THE DEVELOPER GUI 
-      Setup(); // ! Change this to Setup(); , in case you see anything other than Setup() here.
-      
-        if (health <= 0) { // This code is problematic - it causes the game to display but not accept input
-          GameEnd();
-        };
+        Setup(); // ! Change this to Setup(); , in case you see anything other than Setup() here.
         
 
         //Title Screens Changing
@@ -395,7 +392,7 @@
             };
            };
           };
-      // GENERAL NOTES 1. NAMING CONVENTIONS
+      //  GENERAL NOTES 1. NAMING CONVENTIONS
       // Naming convention is as follows: if you see an A, B, C, or D in from of the letter w, it is to indicate the level where the wall is location. For example, wall Aw1 is in level 1, wall Bw1 is in level 2, and so on.
       // Abnormally high number such as 666 and 999 indicate special scenes, that the player would not normally see if they were in a perfect playthrough. However, scene 666 is an intended part of the game while scene 999 is not.
       // 2. FUNCTIONS
