@@ -1,4 +1,6 @@
 <!DOCTYPE html> 
+<!-- ! LOOK HERE IF YOU ENTERED A LEVEL ON STARTUP-->
+<!-- ! LOOK AROUND LINE 300 TO CHECK THAT GSETUP() IS IN PLACE-->
 <html lang="en"> 
   <head>
     <title>Maze Runner</title> 
@@ -44,7 +46,7 @@
   <!-- processing.js lib from KhanAcademy -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.8/processing.js"></script> 
   <script>
-    var programCode = function(processingInstance) {
+     function programCode(processingInstance) {
       with (processingInstance) {
         size(800, 800); 
         frameRate(60);
@@ -94,26 +96,6 @@
           textSize: 28,
           text: "Title Screen"
         }
-        var b999A = {
-          x: 0,
-          y: 300,
-          width: 100,
-          height: 100,
-          rounding: 10,
-          fill: 0,
-          textSize: 28,
-          text: "Tutorial"
-        }
-        var b999B = {
-          x: 0,
-          y: 450,
-          width: 100,
-          height: 100,
-          rounding: 10,
-          fill: 0,
-          textSize: 28,
-          text: "Level 2"
-        }
         // function to draw all my buttons cleanly
         function btnGen(btn) { 
             fill(btn.fill);
@@ -128,8 +110,9 @@
         function walls(wall) {
           fill(16, 16, 16);
           rect(wall.x, wall.y, wall.width, wall.height, wall.rounding);
-          if (mouseX <= wall.x && mouseY <= wall.y) {
-            health = 0;
+          if ((mouseX >= wall.x && mouseX <= (wall.x + wall.width) && mouseY >= wall.y && mouseY <= (wall.y + wall.height))) {
+            health =  health - 10;
+            return health;
           };
         };
         function winbox(win) {
@@ -168,19 +151,6 @@
           text("With your mouse, guide the boy to the end of the maze.", 50, 500, 600, 700);
           btnGen(b1);
         };
-        function DevGui() {
-          scene = 999;
-          background(200, 200, 200);
-          textSize(20);
-          fill(0, 0, 0);
-          text("Developer GUI", 10, 20);
-          text("Scene: " + scene, 10, 40);
-          text("If you got here by accident, please refresh the page.", 10, 60);
-          text("If the issue persists, check line 300 of the code.", 10, 80);
-          text("If the function there is anything EXCEPT Setup(), change it to Setup();", 10, 100);
-          btnGen(b1); btnGen(b2); btnGen(b3); btnGen(b4); btnGen(b999A); btnGen(b999B);
-        };
-
         //Button input checks
         function MCC(btn) {
             console.log("MouseX:", mouseX, "MouseY:", mouseY); // debugging line
@@ -201,13 +171,10 @@
           if (isPlaying === true) {
             imageMode(CENTER);
             image(img, mouseX, mouseY, 50, 50);
-
-        //    if (health <= 0) {
-          //    gameend();
-        //    } else if (mouseX <= (wall.x + wall.width) && mouseY <= (wall.y + wall.height)) {
-          //      health = health - 10;
-          //  };
           };
+        };
+        if (isPlaying === true && health > 1 && mouseX <= (wall.x + wall.width) && mouseY <= (wall.y + wall.height)) {
+          health = health - 10;
         };
         // Dead Screen
         function gameend() {
@@ -327,7 +294,7 @@
         }
     //Game 
         
-//  LOOK HERE IF YOU ACCIDENTALLY ENTERED THE DEVELOPER GUI 
+//  LOOK HERE IF YOU ACCIDENTALLY ENTERED A LEVEL 
         GSetup(); // ! Change this to Setup(); , in case you see anything other than Setup() here.
         
 
@@ -376,28 +343,12 @@
           };
           };
         };
-          
-        // DEVELOPER GUI
-        // DeveloperScene Function
-          if (scene === 999)
-           mouseClicked = function() {
-            if (MCC(b1)) {
-              level1();
-            } else if (MCC(b3)) {
-              location.reload();
-            } else if (MCC(b999A)) {
-              tutorial();
-            } else if (MCC(b999B)) {
-              level2();
-            };
-           };
           };
       //  GENERAL NOTES 1. NAMING CONVENTIONS
       // Naming convention is as follows: if you see an A, B, C, or D in from of the letter w, it is to indicate the level where the wall is location. For example, wall Aw1 is in level 1, wall Bw1 is in level 2, and so on.
       // Abnormally high number such as 666 and 999 indicate special scenes, that the player would not normally see if they were in a perfect playthrough. However, scene 666 is an intended part of the game while scene 999 is not.
       // 2. FUNCTIONS
       // MCC stands for Mouse Clicked Check. It is a function that checks if the mouse is clicked within the bounds of a button. Used for scene changes. SYNTAX: MCC(b1)
-      // DevGui is the developer GUI. It is used to test the game and to make sure that everything is working properly. It is not intended to be seen by the player. Call via DevGui();
       // Setup should ALWAYS be the first scene displayed.
       // Level1 is called via the start button.
       // Walls is a specific function to draw walls, it is different than the other by setting the health to 0 when the player collides with it. SYNTAX: walls(Aw1); where Aw1 is the name of the wall.
@@ -409,7 +360,7 @@
       // Scene 2 = Tutorial
       // Scene 3 = Level 1
       // Scene 666 = Game Over
-      // Scene 999 = Developer GUI
+      // Scene 999 = Win Screen
       // 4. VARIABLES
       // 4a. Walls Aw1 through Aw6 are level 1 walls
       // 4B. Buttons
