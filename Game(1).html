@@ -48,7 +48,7 @@
       with (processingInstance) {
         size(800, 800); 
         frameRate(60);
-        
+        img = loadImage("characterLarge.png");
 
         // Certain Debugging things
         PFont.list(); {
@@ -115,7 +115,7 @@
           text: "Level 2"
         }
         // function to draw all my buttons cleanly
-        var btnGen = function(btn) {
+        function btnGen(btn) { 
             fill(btn.fill);
             rect(btn.x, btn.y, btn.width, btn.height, btn.rounding);
             textSize(btn.textSize);
@@ -125,20 +125,20 @@
         };
 
         // Hitbox rectangles
-        var walls = function(wall) {
+        function walls(wall) {
           fill(16, 16, 16);
           rect(wall.x, wall.y, wall.width, wall.height, wall.rounding);
           if (mouseX <= wall.x && mouseY <= wall.y) {
             health = 0;
           };
         };
-        var winbox = function(win) {
+        function winbox(win) {
           fill(30, 188, 30);
           rect(win.x, win.y, win.width, win.height, win.rounding);
           if (mouseX <= win.x && mouseY <= win.y);
         };
         //First scene, title screen
-        var Setup = function() {
+        function GSetup() {
           scene = 1;
           background(252, 161, 3);
           fill(255, 255, 255);
@@ -147,11 +147,11 @@
           textSize(45);
           text("Click anywhere to start", 225, 500);
           keyPressed();
-          img = loadImage("characterLarge.png");
+          
           health = 5;
         };
         // Call while scene 1 and mouseclicked, make sure button is clicked to continue to game
-        var tutorial = function() {
+        function tutorial() {
           scene = 2;
           textAlign(LEFT, TOP);
           background(252, 161, 3);
@@ -168,7 +168,7 @@
           text("With your mouse, guide the boy to the end of the maze.", 50, 500, 600, 700);
           btnGen(b1);
         };
-        var DevGui = function() {
+        function DevGui() {
           scene = 999;
           background(200, 200, 200);
           textSize(20);
@@ -182,7 +182,7 @@
         };
 
         //Button input checks
-        var MCC = function(btn) {
+        function MCC(btn) {
             console.log("MouseX:", mouseX, "MouseY:", mouseY); // debugging line
             console.log("btn:", btn);
             return (mouseX >= btn.x && mouseX <= (btn.x + btn.width) && mouseY >= btn.y && mouseY <= (btn.y + btn.height));
@@ -210,7 +210,7 @@
           };
         };
         // Dead Screen
-        var gameend = function() {
+        function gameend() {
           scene = 666;
           background(0, 0, 0);
           textSize(75);
@@ -223,7 +223,7 @@
 
         };
         // Game level 1
-        var level1 = function() {
+        function level1() {
           scene = 3;
           background(98, 98, 98);
           walls(Aw1); walls(Aw2); walls(Aw3); walls(Aw4); walls(Aw5); walls(Aw6);
@@ -276,8 +276,8 @@
           rounding: 0,
         };
 
-        // Level 2
-        var level2 = function(){ 
+        // Level 2 
+        function level2() {
           scene = 4;
           background(98, 98, 98);
           walls(Bw1); walls(Bw2); walls(Bw3); walls(Bw4); walls(Bw5); walls(Bw6);
@@ -328,7 +328,7 @@
     //Game 
         
 //  LOOK HERE IF YOU ACCIDENTALLY ENTERED THE DEVELOPER GUI 
-        Setup(); // ! Change this to Setup(); , in case you see anything other than Setup() here.
+        GSetup(); // ! Change this to Setup(); , in case you see anything other than Setup() here.
         
 
         //Title Screens Changing
