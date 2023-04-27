@@ -30,15 +30,15 @@
     <canvas id="mycanvas"></canvas> 
     <div id="Code">
       <div id="text"
-      <h1 id="head">Source Code</h1>
-      <p>Embed script done by <a href="https://EmGithub.com">EmGithub.com</a></p>
+        <h1 id="head">Source Code</h1>
+        <p>Embed script done by <a href="https://EmGithub.com">EmGithub.com</a></p>
       </div>
       <div id="embed">
-      <pre>
-        <code>
-          <script id="embd" src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2FIvanButBetter%2FMazeRunner%2Fblob%2Fmain%2FGame%281%29.html&style=atom-one-dark&type=code&showLineNumbers=on&showFullPath=on&showCopy=on"></script>
-        </code>
-      </pre>
+        <pre>
+          <code>
+            <script id="embd" src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2FIvanButBetter%2FMazeRunner%2Fblob%2Fmain%2FGame%281%29.html&style=atom-one-dark&type=code&showLineNumbers=on&showFullPath=on&showCopy=on"></script>
+          </code>
+        </pre>
       </div>
     </div>
 
@@ -60,8 +60,8 @@
       // Variables
         var StartButton = 0;
         var scene = 0;
-        var health = 5;
-        var timer = 30;
+        var health = 500;
+        var timer = 10;
         var isPlaying = false;
         var img;
 
@@ -157,26 +157,64 @@
             console.log("btn:", btn);
             return (mouseX >= btn.x && mouseX <= (btn.x + btn.width) && mouseY >= btn.y && mouseY <= (btn.y + btn.height));
         };
-        var wallColl = function(wall){
+        function wallColl(wall) {
           if (mouseX <= wall.x && mouseY <= wall.y);
             health = -10;
         };
-        var winColl = function(win) {
-          if (isPlaying === true && mouseX <= win.x && mouseY <= win.y);
-            level2();
+        function winColl(win) {
+          if (mouseX <= win.x && (win.x + win.width) && mouseY <= win.y && (win.y + win.height));
+            NextLevel();
         };
+      //  function PlayerHitbox() { // <!-- !NOT YET WORKING
+      //    if(isPlaying === true) {
+      //      var playerHitbox = {
+      //        x: mouseX - 25,
+      //        y: mouseY - 25,
+      //        width: 50,
+      //        height: 50
+      //      };
+      //      for(var i = 0; i < walls.length; i++) {
+      //        if(rectIntersectsRect(playerHitbox, walls[i])) {
+      //          health -= 10;
+      //        }
+      //      } if(rectIntersectsRect(playerHitbox, win1)) {
+      //        NextLevel();
+      //      }
+      //    }
+     //   }
 
+        function NextLevel() {
+          if (level1 === true) {
+            level2();
+          } if (level2 === true) {
+            level3();
+          } if (level3 === true) {
+            level4();
+          }
+        }
         // Mouse controls
         draw = function() {
           if (isPlaying === true) {
+            level1() // This puts a bandaid on the draw function
             imageMode(CENTER);
             image(img, mouseX, mouseY, 50, 50);
+            timer = timer - 1/60;
+            text(timer, 50, 50, 50, 50)
+          } if (timer == 0 || health === 0) {
+            gameend();
+            
           };
         };
-        if (isPlaying === true && health > 1 && mouseX <= (wall.x + wall.width) && mouseY <= (wall.y + wall.height)) {
-          health = health - 10;
-        };
-        // Dead Screen
+        function AltPlayerDeathCheck() {
+          if (health === 0 || health <= 0) {
+            gameend();
+          }
+          if (timer === 0 || timer <= 0) {
+            health = health - 100;
+            gameend();
+          }
+        }
+          // Dead Screen
         function gameend() {
           scene = 666;
           background(0, 0, 0);
@@ -195,7 +233,7 @@
           background(98, 98, 98);
           walls(Aw1); walls(Aw2); walls(Aw3); walls(Aw4); walls(Aw5); walls(Aw6);
           wallColl(Aw1); wallColl(Aw2); wallColl(Aw3); wallColl(Aw4); wallColl(Aw5); wallColl(Aw6);
-          timer = 30;
+          //timer = 15;
           winbox(win1);
         };
           // Level 1 walls
@@ -243,7 +281,7 @@
           rounding: 0,
         };
 
-        // Level 2 
+        // Level 2 walls
         function level2() {
           scene = 4;
           background(98, 98, 98);
@@ -294,11 +332,14 @@
         }
     //Game 
         
-//  LOOK HERE IF YOU ACCIDENTALLY ENTERED A LEVEL 
-        GSetup(); // ! Change this to Setup(); , in case you see anything other than Setup() here.
+//<!-- !  LOOK HERE IF YOU ACCIDENTALLY ENTERED A LEVEL --!>
+       GSetup(); //<!--  ! Change this to Setup(); , in case you see anything other than Setup() here. --!>
         
 
         //Title Screens Changing
+        if (isPlaying === true) {
+          AltPlayerDeathCheck();
+        }
         if(scene === 1 || scene === 2 || scene === 0) {
           mouseClicked = function() {
             if(scene === 1) { // Main Menu
