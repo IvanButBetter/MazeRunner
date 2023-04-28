@@ -43,7 +43,6 @@
     </div>
 
   </body>
-  <!-- processing.js lib from KhanAcademy -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.8/processing.js"></script> 
   <script>
      function programCode(processingInstance) {
@@ -61,7 +60,7 @@
         var StartButton = 0;
         var scene = 0;
         var health = 500;
-        var timer = 10;
+        var timer = 1;
         var isPlaying = false;
         var img;
 
@@ -109,6 +108,7 @@
         // Hitbox rectangles
         function walls(wall) {
           fill(16, 16, 16);
+          noStroke();
           rect(wall.x, wall.y, wall.width, wall.height, wall.rounding);
           if ((mouseX >= wall.x && mouseX <= (wall.x + wall.width) && mouseY >= wall.y && mouseY <= (wall.y + wall.height))) {
             health =  health - 10;
@@ -157,31 +157,33 @@
             console.log("btn:", btn);
             return (mouseX >= btn.x && mouseX <= (btn.x + btn.width) && mouseY >= btn.y && mouseY <= (btn.y + btn.height));
         };
-        function wallColl(wall) {
-          if (mouseX <= wall.x && mouseY <= wall.y);
-            health = -10;
-        };
+      //  function wallColl(wall) {
+      //    if (mouseX >= wall.x && mouseX <=(wall.x + wall.width) && mouseY >= wall.y && mouseY <=  (wall.y + wall.height) && isPlaying === true);
+      //      isPlaying = false;
+      //      gameend();
+       // };
         function winColl(win) {
           if (mouseX <= win.x && (win.x + win.width) && mouseY <= win.y && (win.y + win.height));
             NextLevel();
         };
-      //  function PlayerHitbox() { // <!-- !NOT YET WORKING
-      //    if(isPlaying === true) {
-      //      var playerHitbox = {
-      //        x: mouseX - 25,
-      //        y: mouseY - 25,
-      //        width: 50,
-      //        height: 50
-      //      };
-      //      for(var i = 0; i < walls.length; i++) {
-      //        if(rectIntersectsRect(playerHitbox, walls[i])) {
-      //          health -= 10;
-      //        }
-      //      } if(rectIntersectsRect(playerHitbox, win1)) {
-      //        NextLevel();
-      //      }
-      //    }
-     //   }
+      
+        //function PlayerHitbox() { // <!-- !NOT YET WORKING
+        //  if(isPlaying === true) {
+        //    var playerHitbox = {
+        //      x: mouseX - 25,
+        //      y: mouseY - 25,
+        //      width: 50,
+        //      height: 50
+        //    };
+        //    for(var i = 0; i < walls.length; i++) {
+        //      if(rectIntersectsRect(playerHitbox, walls[i])) {
+        //        health -= 10;
+        //      }
+        //    } if(rectIntersectsRect(playerHitbox, win1)) {
+        //      NextLevel();
+        //    };
+        //  };
+      // };
 
         function NextLevel() {
           if (level1 === true) {
@@ -200,22 +202,28 @@
             image(img, mouseX, mouseY, 50, 50);
             timer = timer - 1/60;
             text(timer, 50, 50, 50, 50)
-          } if (timer == 0 || health === 0) {
-            gameend();
+            if (timer <= 0) {
+              gameend();
+              scene = 666
+              
+            };
             
           };
         };
-        function AltPlayerDeathCheck() {
-          if (health === 0 || health <= 0) {
-            gameend();
-          }
-          if (timer === 0 || timer <= 0) {
-            health = health - 100;
-            gameend();
-          }
+        function PlayerDeath() {
+          if (isPlaying === true) {
+            if (health <= 0) {
+              isPlaying = false;
+              gameend();
+            } else if (timer <= 0) {
+              isPlaying = false;
+              gameend();
+            }
+          };
         }
           // Dead Screen
         function gameend() {
+          isPlaying = false;
           scene = 666;
           background(0, 0, 0);
           textSize(75);
@@ -232,7 +240,7 @@
           scene = 3;
           background(98, 98, 98);
           walls(Aw1); walls(Aw2); walls(Aw3); walls(Aw4); walls(Aw5); walls(Aw6);
-          wallColl(Aw1); wallColl(Aw2); wallColl(Aw3); wallColl(Aw4); wallColl(Aw5); wallColl(Aw6);
+        //  wallColl(Aw1); wallColl(Aw2); wallColl(Aw3); wallColl(Aw4); wallColl(Aw5); wallColl(Aw6);
           //timer = 15;
           winbox(win1);
         };
@@ -337,9 +345,6 @@
         
 
         //Title Screens Changing
-        if (isPlaying === true) {
-          AltPlayerDeathCheck();
-        }
         if(scene === 1 || scene === 2 || scene === 0) {
           mouseClicked = function() {
             if(scene === 1) { // Main Menu
@@ -351,11 +356,12 @@
           };
         };
         if(scene === 666) { // Dead Screen
+          console.log("Dead Screen");
           mouseClicked = function() {
             if (MCC(b2)) {
               level1();
               isPlaying = true;
-            } else if (MCC(b3)) {
+            } if (MCC(b3)) {
               location.reload();
             };
           };
