@@ -1,5 +1,5 @@
-# MazeRunner
-Processing.js based game for Structured Programming 2 <br>
+# MazeRunner Web Branch
+You can access the game on [Github Pages](https://ivanbutbetter.github.io/MazeRunner/). You can access the main branch [here](https://github.com/IvanButBetter/MazeRunner) <br>
 
 ## Why is this branch seperated? <br> <br>
 
