@@ -23,6 +23,7 @@
         overflow: auto;
         z-index: 100;
       }
+
     </style>
   </head>
   <body>
@@ -30,17 +31,14 @@
     <div id="Code">
       <div id="text"
         <h1 id="head">Source Code</h1>
-        <p>Embed script done by <a href="https://EmGithub.com">EmGithub.com</a></p>
+        <p>Embed script done by <a href="https://EmGithub.com">EmGithub.com</a><br> View the full code on my <a href="https://github.com/IvanButBetter/MazeRunner">Github Repository.</a></p>
       </div>
       <div id="embed">
-        <pre>
           <code>
             <script id="embd" src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2FIvanButBetter%2FMazeRunner%2Fblob%2Fmain%2FGame.html&style=atom-one-dark&type=code&showLineNumbers=on&showFullPath=on&showCopy=on"></script>
           </code>
-        </pre>
       </div>
     </div>
-
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.8/processing.js"></script> 
   <script>
@@ -59,12 +57,12 @@
         var scene = 0;
         var health = 1;
         var timer = 10;
-        var initTimer = 0;
+        var initTimer = 10;
         var isPlaying = false;
         var img;
         var difficulty = 2;
-        var offline = false;
-        var AddTimer = 0;
+        var offline = 0;
+        var offlineModeIndicator = false;
         // Buttons
         var b1 = {
           x: 300,
@@ -135,7 +133,16 @@
           fill: 255,
           textSize: 30,
           text: "Hard"
-
+        };
+        var b8 = {
+          x: 75,
+          y: 650,
+          width: 150,
+          height: 75,
+          rounding: 10,
+          fill: 166,
+          textSize: 25,
+          text: "Offline mode"
         }
         // Function to draw buttons
         function btnGen(btn) { 
@@ -154,11 +161,12 @@
         };
         function winbox(win) {
           fill(30, 188, 30);
-          rect(win.x, win.y, win.width, win.height, win.rounding);
+          rect(win.x, win.y, win.width, win.height);
         };
         // Non-game scenes at the beginning
         function GSetup() {
           scene = 1;
+          textAlign(LEFT, TOP)
           background(60);
           fill(255, 255, 255);
           textSize(75);
@@ -180,23 +188,37 @@
           textSize(35);
           text("Your character follows your mouse", 50, 200);
           text("Do not hit the black walls", 50, 250);
-          text("Do not stand still, the incoming walls will kill you!", 50, 300);
+          text("If you are too slow, you will die", 50, 300);
           textSize(75);
           text("Objective", 50, 420);
           textSize(35);
-          text("With your mouse, guide the boy to the end of the maze.", 50, 500, 600, 700);
+          text("With your mouse, guide the girl to escape the maze.", 50, 500, 600, 700);
           btnGen(b1);
           btnGen(b99);
           textSize(20);
+          textSize(15)
           text("(Default Difficulty is Normal)", 665, 750)
+          text("Shows hitbox in case image does not load", 200, 750)
+          text("Currently offline mode is set to " + offlineModeIndicator, 175, 775)
+          btnGen(b8);
+          console.log(offline)
+          if (offline % 2 == 0) {
+            offlineModeIndicator = true;
+          } else {
+            offlineModeIndicator = false;
+          }
           mouseClicked = function() {
             if (MCC(b1)) {
               level1();
               isPlaying = true;
             } if (MCC(b99)) {
               DifficultySelect();
-            }
-          }
+            } 
+            if (MCC(b8)) {
+              offline =offline + 1;
+              tutorial();
+            };
+          };
         };
         function DifficultySelect() {
           textAlign(LEFT, TOP)
@@ -249,9 +271,9 @@
               width: 40,
               height: 45,
             }
-            if (offline === false) {
+            if (offline % 2 == 0) {
               noFill()
-            } else if (offline === true) {
+            } else {
               fill(255)
             }
             
@@ -260,12 +282,11 @@
             if (Hitbox.x + Hitbox.width >= wall.x && Hitbox.y + Hitbox.height >= wall.y && Hitbox.x <= (wall.x + wall.width) && Hitbox.y <= (wall.y + wall.height)) {
               console.log("Hit detected on", wall)
               gameend();
-            } else if (scene === 3 && Hitbox.x >= 250 && Hitbox.y >= 0 && Hitbox.x <= (250 + 150) && Hitbox.y <= (0 + 100)) {  //<!-- TODO Fix win detection. It is not working because win is not a parameter, but if you add it then the function does not work
-              console.log("Win detected")
+            } else if (scene === 3 && Hitbox.x >= 250 && Hitbox.y >= 0 && Hitbox.x <= (250 + 150) && Hitbox.y <= (0 + 100)) {
               level2();
               console.log(scene)
               timer = timer + 6
-            } else if (scene === 4 && Hitbox.x + Hitbox.width >= 760 && Hitbox.y + Hitbox.height>= 600 && Hitbox.x <= (760 + 150) && Hitbox.y <= 835) {
+            } else if (scene === 4 && Hitbox.x + Hitbox.width >= 760 && Hitbox.y + Hitbox.height>= 585 && Hitbox.x <= (760 + 150) && Hitbox.y <= 835) {
               level3();
               console.log(scene)
               timer = timer + 5
@@ -273,25 +294,37 @@
               console.log(scene)
               level4();
               timer = timer + 5
+            } else if (scene === 6 && Hitbox.x + Hitbox.width >= 0 && Hitbox.y + Hitbox.height >= 150 && Hitbox.x <= (0 + 50) && Hitbox.y <= (150 + 100)) {
+              console.log(scene)
+              level5();
+              timer = timer + 7
+            } else if (scene === 7 && Hitbox.x + Hitbox.width >= 0 && Hitbox.y + Hitbox.height >= 0 && Hitbox.x <= (0 + 800) && Hitbox.y <= (0 + 50)) {
+              console.log(scene)
+              level6();
+              timer = timer + 5
             }
         };
       };
         // The function that draws stuff
         draw = function() {
+          // Draw levels
           if (isPlaying === true) {
-            //Draws level and player
-            levelLoad() // This puts a bandaid on the draw function
+            levelLoad();
             imageMode(CENTER);
             image(img, mouseX, mouseY, 50, 50);
-            // Timer Function
             Timers()
-          } 
+          } if (isPlaying === false && scene === 666) { // Not neseccary for function, but makes sure the previous frame is cleared.
+            gameend();
+          };
         };
         function Timers() {
           timer = timer - 1/60
           fill(255)
           text(timer, 50, 25)
           PlayerDeath()
+          if (isPlaying === false) {
+            timer = initTimer;
+          }
         };
         // Make sure u die
         function PlayerDeath() {
@@ -317,14 +350,14 @@
           text("Try Again?", 300, 450);
           btnGen(b2);
           btnGen(b3);
-          if (MCC(b2)) {
-            level1();
-            isPlaying = true;
-            timer = 0;
-            timer = initTimer
-          } if (MCC(b3)) {
-            location.reload()
-            isPlaying = false;
+          mouseClicked = function() {
+            if (MCC(b2)) {
+              level1();
+              isPlaying = true;
+            } if (MCC(b3)) {
+              GSetup()
+              isPlaying = false;
+            };
           };
         };
 
@@ -343,7 +376,7 @@
             level6();
         }
       };
-          // Game level 1 and walls & winbox
+          //<!-- * Levels | This part of the code can not break, if you are here to fix then look elsewhere.
 
         function level1() {
           scene = 3;
@@ -352,7 +385,6 @@
           winbox(win1);
           PlayerHitbox(Aw1); PlayerHitbox(Aw2); PlayerHitbox(Aw3); PlayerHitbox(Aw4); PlayerHitbox(Aw5); PlayerHitbox(Aw6); PlayerHitbox(Aw7); PlayerHitbox(Aw8);
         };
-          // Level 1 walls <!-- ! MAKE SURE THERE ARE NO NEGATIVE VALUES IN THE WALLS
         var Aw1 = {
           x: 0,
           y: 0,
@@ -409,7 +441,7 @@
           rounding: 0,
         };
 
-        // Level 2 walls & winbox
+        // Level 2
         function level2() {
           scene = 4;
           background(98, 98, 98);
@@ -445,11 +477,11 @@
           x: 100,
           y: 525,
           width: 800,
-          height: 75,
+          height: 60,
         };
         var Bw6 = {
           x: 0,
-          y: 700,
+          y: 685,
           width: 800,
           height: 400,
         };
@@ -457,7 +489,7 @@
           x: 785,
           y: 0,
           width: 15,
-          height: 600,
+          height: 550,
         }
         var Bw8 = {
           x: 0,
@@ -473,7 +505,7 @@
         }
         var win2 = {
           x: 760,
-          y: 600,
+          y: 585,
           width: 150,
           height: 100,
         };
@@ -488,9 +520,9 @@
 
         var Cw1 = {
           x: 350,
-          y: 675,
+          y: 685,
           width: 450,
-          height: 30,
+          height: 20,
         };
         var Cw2 = {
           x: 200,
@@ -499,10 +531,10 @@
           height: 305,
         }
         var Cw3 = {
-          x: 400,
+          x: 450,
           y: 500,
-          width: 300,
-          height: 100,
+          width: 400,
+          height: 85,
         }
         var Cw4 = {
           x: 700,
@@ -542,7 +574,7 @@
         }
         var Cw10 = {
           x: 0,
-          y: 775,
+          y: 780,
           width: 800,
           height: 25,
         }
@@ -550,37 +582,173 @@
           x: 760,
           y: 705,
           width: 40,
-          height: 70,
+          height: 75,
+        }
+        function level4() {
+          console.log(scene)
+          scene = 6;
+          background(98, 98, 98);
+          walls(Dw1); walls(Dw2); walls(Dw3); walls(Dw4); walls(Dw5); walls(Dw6); walls(Dw7); walls(Dw8); walls(Dw9); walls(Dw10); walls(Dw11); 
+          winbox(win4);
+          PlayerHitbox(Dw1); PlayerHitbox(Dw2); PlayerHitbox(Dw3); PlayerHitbox(Dw4); PlayerHitbox(Dw5); PlayerHitbox(Dw6); PlayerHitbox(Dw7); PlayerHitbox(Dw8); PlayerHitbox(Dw9); PlayerHitbox(Dw10); PlayerHitbox(Dw11);
+        }
+
+        var Dw1 = {
+          x: 500,
+          y: 690,
+          width: 300,
+          height: 14,
+        }
+        var Dw2 = {
+          x: 0,
+          y: 690,
+          width: 375,
+          height: 110,
+        }
+        var Dw3 = {
+          x: 400,
+          y: 550,
+          width: 250,
+          height: 50,
+        }
+        var Dw4 = {
+          x: 375,
+          y: 250,
+          width: 50,
+          height: 350,
+        }
+        var Dw5 = {
+          x: 600,
+          y: 400,
+          width: 200,
+          height: 50,
+        }
+        var Dw6 = {
+          x: 400,
+          y: 250,
+          width: 250,
+          height: 50,
+        }
+        var Dw7 = {
+          x: 0,
+          y: 0,
+          width: 800,
+          height: 150,
+        }
+        var Dw8 = {
+          x: 200,
+          y: 0,
+          width: 50,
+          height: 575,
+        }
+        var Dw9 = {
+          x: 0,
+          y: 250,
+          width: 50,
+          height: 800,
+        }
+        var Dw10 = {
+          x: 375,
+          y: 250,
+          width: 20,
+          height: 420 + 130,
+        }
+        var Dw11 = {
+          x: 790,
+          y: 0,
+          width: 10,
+          height: 800,
+        }
+        var win4 = {
+          x: 0,
+          y: 150,
+          width: 50,
+          height: 100,
+        }
+        function level5() {
+          console.log(scene)
+          scene = 7;
+          background(98, 98, 98);
+          walls(Ew1); walls(Ew2); walls(Ew3); walls(Ew4); walls(Ew5); walls(Ew6);  walls(Ew7); walls(Ew8); walls(Ew9);
+          winbox(win5);
+          PlayerHitbox(Ew1); PlayerHitbox(Ew2); PlayerHitbox(Ew3); PlayerHitbox(Ew4); PlayerHitbox(Ew5); PlayerHitbox(Ew6); PlayerHitbox(Ew7); PlayerHitbox(Ew8); PlayerHitbox(Ew9);
+        }
+        var win5 = {
+          x: 325,
+          y: 710,
+          width: 125,
+          height: 80,
+        }
+        var Ew1 = {
+          x: 0,
+          y: 0,
+          width: 800,
+          height: 150,
+        }
+        var Ew2 = {
+          x: 0,
+          y: 250,
+          width: 675,
+          height:40,
+        }
+        var Ew3 = {
+          x: 100,
+          y: 375,
+          width: 700,
+          height: 40,
+        }
+        var Ew4 = {
+          x: 100,
+          y: 375,
+          width: 40,
+          height: 325,
+        }
+        var Ew5 = {
+          x: 250,
+          y: 500,
+          width: 75,
+          height: 300,
+        }
+        var Ew6 = {
+          x: 250,
+          y: 500,
+          width: 425,
+          height: 210,
+        }
+        var Ew7 = {
+          x: 790,
+          y: 0,
+          width: 10,
+          height: 800,
+        }
+        var Ew8 = {
+          x: 0,
+          y: 0,
+          width: 10,
+          height: 800,
+        }
+        var Ew9 = {
+          x: 0,
+          y: 790,
+          width: 800,
+          height: 10,
         }
 //<!-- !  LOOK HERE IF YOU ACCIDENTALLY ENTERED A LEVEL --!>
        GSetup(); //<!--  ! Change this to Setup(); , in case you see anything other than Setup() here. --!>
       };
     };
       //  GENERAL NOTES 1. NAMING CONVENTIONS
+      // You might see comments that have the following format: "//<!--" followed by a punctuation mark. This is so that the vscode BetterComments extension highlighting works, as it detects the language as HTML rather than JS.
       // Naming convention is as follows: if you see an A, B, C, or D in from of the letter w, it is to indicate the level where the wall is location. For example, wall Aw1 is in level 1, wall Bw1 is in level 2, and so on.
-      // Abnormally high number such as 666 and 999 indicate special scenes, that the player would not normally see if they were in a perfect playthrough. However, scene 666 is an intended part of the game while scene 999 is not.
+      // Abnormal scene numbers are used to indicate special case scenes
       // 2. FUNCTIONS
       // MCC stands for Mouse Clicked Check. It is a function that checks if the mouse is clicked within the bounds of a button. Used for scene changes. SYNTAX: MCC(b1)
       // Setup should ALWAYS be the first scene displayed.
-      // Level1 is called via the start button.
-      // Walls is a specific function to draw walls, it is different than the other by setting the health to 0 when the player collides with it. SYNTAX: walls(Aw1); where Aw1 is the name of the wall.
-      // Winbox is a specific function to draw the box that will load the next level. SYNTAX: winbox(win1); where win1 is the name of the winbox.
-      // btngen is a function that generates a button. SYNTAX: btngen(1, 100, 100, 100, 100, "Start"); where 1 is the button number, 100 is the x position, 100 is the y position, 100 is the width, 100 is the height, and "Start" is the text on the button.
-      // 3. SCENES & THEIR CORRESPONDING DRAWINGS
-      // Scene 0 = Loading Screen
-      // Scene 1 = Title Screen
-      // Scene 2 = Tutorial
-      // Scene 3 = Level 1
+      // 3. SCENES
+      // Scene 0 to 3 are the non-game scenes
+      // Scene 3 to scene 7 are the levels
       // Scene 666 = Game Over
       // Scene 999 = Win Screen
-      // 4. VARIABLES
-      // 4a. Walls Aw1 through Aw6 are level 1 walls
-      // 4B. Buttons
-      // Btn 1 is the "Start" button
-      // Btn 2 is the "Try Again" button
-      // Btn 3 is the "Title Screen" button
-      // Btn 999A is the tutorial button
-      // Btn 999B is the level 2 button
     var canvas = document.getElementById("mycanvas"); 
     var processingInstance = new Processing(canvas, programCode); 
   </script>
