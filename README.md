@@ -1,5 +1,6 @@
 # MazeRunner Web Branch
 You can access the game on [Github Pages](https://ivanbutbetter.github.io/MazeRunner/). You can access the main branch [here](https://github.com/IvanButBetter/MazeRunner) <br>
+Changelog: [Commit History] (https://github.com/IvanButBetter/MazeRunner/commits/main/Game.html}
 
 ## Why is this branch seperated? <br> <br>
 
