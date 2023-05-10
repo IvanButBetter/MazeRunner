@@ -1,6 +1,4 @@
 <!DOCTYPE html> 
-<!-- ! LOOK HERE IF YOU ENTERED A LEVEL ON STARTUP-->
-<!-- ! LOOK AROUND LINE 300 TO CHECK THAT GSETUP() IS IN PLACE-->
 <html lang="en"> 
   <head>
     <title>Maze Runner</title> 
@@ -23,7 +21,6 @@
         overflow: auto;
         z-index: 100;
       }
-
     </style>
   </head>
   <body>
@@ -47,12 +44,6 @@
         size(800, 800); 
         frameRate(60);
         img = loadImage("characterLarge.png");
-
-        // Certain Debugging things
-        PFont.list(); {
-          console.log("Font List:", PFont.list())
-        }
-
       // Variables
         var scene = 0;
         var health = 1;
@@ -61,8 +52,8 @@
         var isPlaying = false;
         var img;
         var difficulty = 2;
-        var offline = 0;
-        var offlineModeIndicator = false;
+        var hitboxDisplay = 0;
+        var hitboxDisplayModeIndicator = false;
         // Buttons
         var b1 = {
           x: 300,
@@ -73,27 +64,27 @@
           fill: 166,
           textSize: 30,
           text: "Start"
-        }
+        };
         var b2 = {
           x: 300,
           y: 650,
           width: 150,
           height: 75,
           rounding: 10,
-          fill: 254,
+          fill: 166,
           textSize: 30,
-          text: "Try Again"
-        }
+          text: "Restart"
+        };
         var b3 = {
           x: 600,
           y: 650,
           width: 150,
           height: 75,
           rounding: 10,
-          fill: 254,
+          fill: 166,
           textSize: 28,
           text: "Title Screen"
-        }
+        };
         var b99 = {
           x: 600,
           y: 650,
@@ -103,34 +94,34 @@
           fill: 166,
           textSize: 20,
           text: "Difficulty Select"
-        }
+        };
         var b5 = {
           x: 100,
           y: 600,
           width: 150,
           height: 75,
           rounding: 10,
-          fill: 255,
+          fill: 166,
           textSize: 30,
           text: "Easy"
-        }
+        };
         var b6 = {
           x: 350,
           y: 600,
           width: 150,
           height: 75,
           rounding: 10,
-          fill: 255,
+          fill: 166,
           textSize: 30,
           text: "Normal"
-        }
+        };
         var b7 = {
           x: 600,
           y: 600,
           width: 150,
           height: 75,
           rounding: 10,
-          fill: 255,
+          fill: 166,
           textSize: 30,
           text: "Hard"
         };
@@ -142,8 +133,8 @@
           rounding: 10,
           fill: 166,
           textSize: 25,
-          text: "Offline mode"
-        }
+          text: "Hitbox mode"
+        };
         // Function to draw buttons
         function btnGen(btn) { 
             fill(btn.fill);
@@ -163,10 +154,15 @@
           fill(30, 188, 30);
           rect(win.x, win.y, win.width, win.height);
         };
-        // Non-game scenes at the beginning
+        function MouseClickedCheck(btn) { // Mouse Clicked Check for buttons
+          //  console.log("MouseX:", mouseX, "MouseY:", mouseY); // Show mouse coordinates every frame
+            console.log("btn:", btn);
+            return (mouseX >= btn.x && mouseX <= (btn.x + btn.width) && mouseY >= btn.y && mouseY <= (btn.y + btn.height));
+        };
+        // NON PLAYABLE SCENES
         function GSetup() {
           scene = 1;
-          textAlign(LEFT, TOP)
+          textAlign(LEFT, TOP);
           background(60);
           fill(255, 255, 255);
           textSize(75);
@@ -174,137 +170,152 @@
           textSize(45);
           text("Click anywhere to start", 225, 500);
           mouseClicked = function() {
-            tutorial()
+            tutorial();
           }
         };
         function tutorial() {
           scene = 2;
-          console.log(scene)
+          console.log(scene);
           textAlign(LEFT, TOP);
           background(60);
           fill(255);
           textSize(75);
-          text("How to Play", 50, 100);
+          text("How to Play", 50, 50);
           textSize(35);
-          text("Your character follows your mouse", 50, 200);
-          text("Do not hit the black walls", 50, 250);
-          text("If you are too slow, you will die", 50, 300);
+          text("Your character follows your mouse.", 50, 150);
+          text("Do not hit the black walls.", 50, 200);
+          text("If you are too slow, you will die.", 50, 250);
           textSize(75);
-          text("Objective", 50, 420);
+          text("Objective", 50, 300);
           textSize(35);
-          text("With your mouse, guide the girl to escape the maze.", 50, 500, 600, 700);
+          text("With your mouse, guide the girl to escape the maze.", 50, 400, 600, 700);
+          fill(240, 0, 0);
+          text("The game is meant to be hard, don't give up!", 50, 500);
+          fill(255);
           btnGen(b1);
           btnGen(b99);
           textSize(20);
-          textSize(15)
-          text("(Default Difficulty is Normal)", 665, 750)
-          text("Shows hitbox in case image does not load", 200, 750)
-          text("Currently offline mode is set to " + offlineModeIndicator, 175, 775)
+          textSize(15);
+          fill(255);
+          text("(Default Difficulty is Normal)", 665, 750);
+          text("Shows hitbox in case image does not load", 200, 750);
+          text("Currently hitbox mode is set to " + hitboxDisplayModeIndicator, 175, 775);
           btnGen(b8);
-          console.log(offline)
-          if (offline % 2 == 0) {
-            offlineModeIndicator = true;
+          console.log(hitboxDisplay);
+          if (hitboxDisplay % 2 == 0) {
+            hitboxDisplayModeIndicator = true;
           } else {
-            offlineModeIndicator = false;
-          }
+            hitboxDisplayModeIndicator = false;
+          };
           mouseClicked = function() {
-            if (MCC(b1)) {
+            if (MouseClickedCheck(b1)) {
               level1();
               isPlaying = true;
-            } if (MCC(b99)) {
+            } if (MouseClickedCheck(b99)) {
               DifficultySelect();
-            } 
-            if (MCC(b8)) {
-              offline =offline + 1;
+            };
+            if (MouseClickedCheck(b8)) {
+              hitboxDisplay = hitboxDisplay + 1;
               tutorial();
             };
           };
         };
         function DifficultySelect() {
-          textAlign(LEFT, TOP)
-          scene = scene + 777
-          background(60)
-          fill(255)
-          textSize(75)
-          text("Difficulty Selection", 50, 100)
-          textSize(35)
-          text("Difficulty is based on the timer.", 10, 200)
-          textSize(20)
-          text("Hard makes the timer actually have consequences. Intended for experienced players.", 10, 250)
-          text("Normal is the default value. Gives you time to make mistakes. This is the default", 10, 300)
-          text("Easy is for those who want to take the game slowly without having to worry about time.", 10, 350)
+          textAlign(LEFT, TOP);
+          scene = scene + 777;
+          background(60);
+          fill(255);
+          textSize(75);
+          text("Difficulty Selection", 50, 100);
+          textSize(35);
+          text("Difficulty is based on the timer.", 10, 200);
+          textSize(20);
+          text("Hard makes the timer actually have consequences. Intended for experienced players.", 10, 250);
+          text("Normal is the default value. Gives you time to make mistakes. This is the default", 10, 300);
+          text("Easy is for those who want to take the game slowly without having to worry about time.", 10, 350);
           btnGen(b5);
           btnGen(b6);
           btnGen(b7);
           mouseClicked = function() {
-            if (MCC(b5)) {
+            if (MouseClickedCheck(b5)) {
               difficulty = 1;
               timer = timer + 25;
               initTimer = 35;
-              tutorial()
-          //    isPlaying = true;
-            } if (MCC(b6)) {
+              tutorial();
+            } if (MouseClickedCheck(b6)) {
               difficulty = 2;
-              tutorial()
+              tutorial();
               initTimer = 10;
-          //    isPlaying = true;
-            } if (MCC(b7)) {
+            } if (MouseClickedCheck(b7)) {
               difficulty = 3;
               timer = timer - 5;
               initTimer = 5;
-              tutorial()
-          //    isPlaying = true;
-            }
-          }
-        }
-        //Button input checks
-        function MCC(btn) {
-            console.log("MouseX:", mouseX, "MouseY:", mouseY); // debugging line
-            console.log("btn:", btn);
-            return (mouseX >= btn.x && mouseX <= (btn.x + btn.width) && mouseY >= btn.y && mouseY <= (btn.y + btn.height));
+              tutorial();
+            };
+          };
         };
-        function PlayerHitbox(wall) { // <!-- TODO Fix hitbox
+        function gameend() {
+          console.log("Game Over");
+          background(0);
+          isPlaying = false;
+          scene = 666;
+          background(0, 0, 0);
+          textSize(75);
+          fill(255, 0, 0);
+          textAlign(LEFT, TOP);
+          text("You Died", 250, 350);
+          textSize(45);
+          text("Try Again?", 300, 450);
+          btnGen(b2);
+          btnGen(b3);
+          mouseClicked = function() {
+            if (MouseClickedCheck(b2)) {
+              level1();
+              isPlaying = true;
+            } if (MouseClickedCheck(b3)) {
+              GSetup();
+              isPlaying = false;
+            };
+          };
+        };
+        // Core game functions
+        function PlayerHitbox(wall) {
           if (isPlaying === true) {
             var Hitbox = {
               x: mouseX - 20,
               y: mouseY - 20,
               width: 40,
               height: 45,
-            }
-            if (offline % 2 == 0) {
-              noFill()
+            };
+            if (hitboxDisplay % 2 == 0) {
+              noFill();
             } else {
-              fill(255)
-            }
-            
+              fill(200, 0, 0);
+            };
             rect(Hitbox.x, Hitbox.y, Hitbox.width, Hitbox.height);
-            console.log(Hitbox.x, Hitbox.y) // Make sure this prints to console if char does not load
             if (Hitbox.x + Hitbox.width >= wall.x && Hitbox.y + Hitbox.height >= wall.y && Hitbox.x <= (wall.x + wall.width) && Hitbox.y <= (wall.y + wall.height)) {
-              console.log("Hit detected on", wall)
+              console.log("Hit detected on", wall);
               gameend();
-            } else if (scene === 3 && Hitbox.x >= 250 && Hitbox.y >= 0 && Hitbox.x <= (250 + 150) && Hitbox.y <= (0 + 100)) {
-              level2();
-              console.log(scene)
-              timer = timer + 6
-            } else if (scene === 4 && Hitbox.x + Hitbox.width >= 760 && Hitbox.y + Hitbox.height>= 585 && Hitbox.x <= (760 + 150) && Hitbox.y <= 835) {
-              level3();
-              console.log(scene)
-              timer = timer + 5
-            } else if (scene === 5 && Hitbox.x + Hitbox.width >= 760 && Hitbox.y + Hitbox.height >= 705 && Hitbox.x <= (760 + 40) && Hitbox.y <= (705 + 70)) {
-              console.log(scene)
-              level4();
-              timer = timer + 5
-            } else if (scene === 6 && Hitbox.x + Hitbox.width >= 0 && Hitbox.y + Hitbox.height >= 150 && Hitbox.x <= (0 + 50) && Hitbox.y <= (150 + 100)) {
-              console.log(scene)
-              level5();
-              timer = timer + 7
-            } else if (scene === 7 && Hitbox.x + Hitbox.width >= 0 && Hitbox.y + Hitbox.height >= 0 && Hitbox.x <= (0 + 800) && Hitbox.y <= (0 + 50)) {
-              console.log(scene)
-              level6();
-              timer = timer + 5
-            }
+            };
+          };
         };
-      };
+      
+        function PHWin(win) {
+          if (isPlaying === true) {
+            var HitboxTwo = {
+              x: mouseX - 20,
+              y: mouseY - 20,
+              width: 40,
+              height: 45,
+            } 
+            if (HitboxTwo.x + HitboxTwo.width >= win.x && HitboxTwo.y + HitboxTwo.height >= win.y && HitboxTwo.x <= (win.x + win.width) && HitboxTwo.y <= (win.y + win.height)) {
+              scene = scene + 1;
+              levelLoad();
+              timer = timer + 6.33;
+            };
+          };
+        };
+
         // The function that draws stuff
         draw = function() {
           // Draw levels
@@ -312,16 +323,16 @@
             levelLoad();
             imageMode(CENTER);
             image(img, mouseX, mouseY, 50, 50);
-            Timers()
-          } if (isPlaying === false && scene === 666) { // Not neseccary for function, but makes sure the previous frame is cleared.
+            Timers();
+          } if (isPlaying === false && scene === 666) {
             gameend();
           };
         };
         function Timers() {
-          timer = timer - 1/60
-          fill(255)
-          text(timer, 50, 25)
-          PlayerDeath()
+          timer = timer - 1/60;
+          fill(255);
+          text(timer, 50, 25);
+          PlayerDeath();
           if (isPlaying === false) {
             timer = initTimer;
           }
@@ -336,30 +347,6 @@
           };
         };
           // Dead Screen
-        function gameend() {
-          console.log("Game Over")
-          background(0)
-          isPlaying = false;
-          scene = 666;
-          background(0, 0, 0);
-          textSize(75);
-          fill(255, 0, 0);
-          textAlign(LEFT, TOP)
-          text("You Died", 250, 350);
-          textSize(45);
-          text("Try Again?", 300, 450);
-          btnGen(b2);
-          btnGen(b3);
-          mouseClicked = function() {
-            if (MCC(b2)) {
-              level1();
-              isPlaying = true;
-            } if (MCC(b3)) {
-              GSetup()
-              isPlaying = false;
-            };
-          };
-        };
 
         function levelLoad() {
           if (scene === 3 && isPlaying === true) {
@@ -374,7 +361,17 @@
             level5();
           } if (scene === 8 && isPlaying === true) {
             level6();
-        }
+          } if (scene === 9 && isPlaying === true) {
+            level7();
+          } if (scene === 10 && isPlaying === true) {
+            level8();
+          } if (scene === 11 && isPlaying === true) {
+            level9();
+          } if (scene === 12 && isPlaying === true) {
+            level10();
+          } if (scene === 13) {
+            GameWin();
+          }
       };
           //<!-- * Levels | This part of the code can not break, if you are here to fix then look elsewhere.
 
@@ -382,367 +379,219 @@
           scene = 3;
           background(98, 98, 98);
           walls(Aw1); walls(Aw2); walls(Aw3); walls(Aw4); walls(Aw5); walls(Aw6); walls(Aw7); walls(Aw8);
-          winbox(win1);
+          winbox(win1); PHWin(win1);
           PlayerHitbox(Aw1); PlayerHitbox(Aw2); PlayerHitbox(Aw3); PlayerHitbox(Aw4); PlayerHitbox(Aw5); PlayerHitbox(Aw6); PlayerHitbox(Aw7); PlayerHitbox(Aw8);
         };
-        var Aw1 = {
-          x: 0,
-          y: 0,
-          width: 250,
-          height: 100,
-        };
-        var Aw2 = {
-          x: 0,
-          y: 400,
-          width: 650,
-          height: 150,
-        };
-        var Aw3 = {
-          x: 500,
-          y: 690,
-          width: 900,
-          height: 300,
-        };
-        var Aw4 = {
-          x: 0,
-          y: 400,
-          width: 250,
-          height: 500,
-        };
-        var Aw5 = {
-          x: 200,
-          y: 200,
-          width: 630,
-          height: 100,
-        };
-        var Aw6 = {
-          x: 400,
-          y: 0,
-          width: 800,
-          height: 200,
-        };
-        var Aw7 = {
-          x: 0,
-          y: 0,
-          width: 50,
-          height: 800,
-        };
-        var Aw8 = {
-          x: 775,
-          y: 0,
-          width: 50,
-          height: 800,
-        }
-        var win1 = {
-          x: 250,
-          y: 0,
-          width: 150,
-          height: 100,
-          rounding: 0,
-        };
 
-        // Level 2
+        var Aw1 = {x: 0,y: 0,width: 250,height: 100};
+        var Aw2 = {x: 0,y: 400,width: 650,height: 150};
+        var Aw3 = {x: 500,y: 690,width: 900,height: 300};
+        var Aw4 = {x: 0,y: 400,width: 250,height: 500};
+        var Aw5 = {x: 200,y: 200,width: 630,height: 100};
+        var Aw6 = {x: 400,y: 0,width: 800,height: 200};
+        var Aw7 = {x: 0,y: 0,width: 50,height: 800};
+        var Aw8 = {x: 775,y: 0,width: 50,height: 800};
+        var win1 = {x: 250,y: 0,width: 150,height: 100};
+
         function level2() {
           scene = 4;
           background(98, 98, 98);
-          walls(Bw1); walls(Bw2); walls(Bw3); walls(Bw4); walls(Bw5); walls(Bw6); walls(Bw7); walls(Bw8);
-          winbox(win2);
-          PlayerHitbox(Bw1); PlayerHitbox(Bw2); PlayerHitbox(Bw3); PlayerHitbox(Bw4); PlayerHitbox(Bw5); PlayerHitbox(Bw6); walls(Bw7); walls(Bw8);
+          walls(Bw1); walls(Bw2); walls(Bw3); walls(Bw4); walls(Bw5); walls(Bw6); walls(Bw7); walls(Bw8); walls(Bw9);
+          winbox(win2); PHWin(win2);
+          PlayerHitbox(Bw1); PlayerHitbox(Bw2); PlayerHitbox(Bw3); PlayerHitbox(Bw4); PlayerHitbox(Bw5); PlayerHitbox(Bw6); PlayerHitbox(Bw7); PlayerHitbox(Bw8); PlayerHitbox(Bw9);
         };
-        var Bw1 = {
-          x: 0,
-          y: 0,
-          width: 250,
-          height: 410,
-        };
-        var Bw2 = {
-          x: 0,
-          y: 350,
-          width: 650,
-          height: 100,
-        };
-        var Bw3 = {
-          x: 400,
-          y: 0,
-          width: 150,
-          height: 250,
-        };
-        var Bw4 = {
-          x: 650,
-          y: 100,
-          width: 50,
-          height: 350,
-        };
-        var Bw5 = {
-          x: 100,
-          y: 525,
-          width: 800,
-          height: 60,
-        };
-        var Bw6 = {
-          x: 0,
-          y: 685,
-          width: 800,
-          height: 400,
-        };
-        var Bw7 = {
-          x: 785,
-          y: 0,
-          width: 15,
-          height: 550,
-        }
-        var Bw8 = {
-          x: 0,
-          y: 0,
-          width: 15,
-          height: 800,
-        }
-        var Bw8 = {
-          x: 450,
-          y: 0,
-          width: 350,
-          height: 20,
-        }
-        var win2 = {
-          x: 760,
-          y: 585,
-          width: 150,
-          height: 100,
-        };
+        var Bw1 = {x: 0,y: 0,width: 250,height: 410};
+        var Bw2 = {x: 0,y: 350,width: 650,height: 70};
+        var Bw3 = {x: 400,y: 0,width: 150,height: 250};
+        var Bw4 = {x: 650,y: 100,width: 50,height: 320};
+        var Bw5 = {x: 100,y: 525,width: 800,height: 60};
+        var Bw6 = {x: 0,y: 685,width: 800,height: 400};
+        var Bw7 = {x: 785,y: 0,width: 15,height: 550};
+        var Bw8 = {x: 0,y: 0,width: 20, height: 800};
+        var Bw8 = {x: 450,y: 0,width: 350,height: 20};
+        var Bw9 = {x: 0, y:0, width: 10, height: 800};
+        var win2 = {x: 720,y: 585,width: 190,height: 100};
 
         function level3() {
           scene = 5;
           background(98, 98, 98);
           walls(Cw1); walls(Cw2); walls(Cw3); walls(Cw4); walls(Cw5); walls(Cw6); walls(Cw7); walls(Cw8); walls(Cw9); walls(Cw10);
-          winbox(win3);
-          PlayerHitbox(Cw1); PlayerHitbox(Cw2); PlayerHitbox(Cw3); PlayerHitbox(Cw4); PlayerHitbox(Cw5); PlayerHitbox(Cw6);
+          winbox(win3); PHWin(win3);
+          PlayerHitbox(Cw1); PlayerHitbox(Cw2); PlayerHitbox(Cw3); PlayerHitbox(Cw4); PlayerHitbox(Cw5); PlayerHitbox(Cw6); PlayerHitbox(Cw7); PlayerHitbox(Cw8); PlayerHitbox(Cw9); PlayerHitbox(Cw10);
         };
 
-        var Cw1 = {
-          x: 350,
-          y: 685,
-          width: 450,
-          height: 20,
-        };
-        var Cw2 = {
-          x: 200,
-          y: 400,
-          width: 150,
-          height: 305,
-        }
-        var Cw3 = {
-          x: 450,
-          y: 500,
-          width: 400,
-          height: 85,
-        }
-        var Cw4 = {
-          x: 700,
-          y: 0,
-          width: 300,
-          height: 400,
-        }
-        var Cw5 = {
-          x: 200,
-          y: 200,
-          width: 400,
-          height: 200,
-        }
-        var Cw6 = {
-          x: 400,
-          y: 0,
-          width: 300,
-          height: 75,
-        }
-        var Cw7 = {
-          x: 200,
-          y: 175,
-          width: 200,
-          height: 200,
-        }
-        var Cw8 = {
-          x: 0,
-          y: 0,
-          width: 800,
-          height: 50,
-        }
-        var Cw9 = {
-          x: 0,
-          y: 0,
-          width: 50,
-          height: 2000,
-        }
-        var Cw10 = {
-          x: 0,
-          y: 780,
-          width: 800,
-          height: 25,
-        }
-        var win3 = {
-          x: 760,
-          y: 705,
-          width: 40,
-          height: 75,
-        }
+        var Cw1 = {x: 350,y: 685,width: 450,height: 20};
+        var Cw2 = {x: 200,y: 400,width: 150,height: 305};
+        var Cw3 = {x: 450,y: 500,width: 400,height: 85};
+        var Cw4 = {x: 700,y: 0,width: 300,height: 400};
+        var Cw5 = {x: 200,y: 200,width: 400,height: 200};
+        var Cw6 = {x: 400,y: 0,width: 300,height: 75};
+        var Cw7 = {x: 200,y: 175,width: 200,height: 200};
+        var Cw8 = {x: 0,y: 0,width: 800,height: 50};
+        var Cw9 = {x: 0,y: 0,width: 75,height: 800};
+        var Cw10 = {x: 0,y: 780,width: 800,height: 25};
+        var win3 = {x: 720,y: 705,width: 80,height: 75};
+
         function level4() {
-          console.log(scene)
+          console.log(scene);
           scene = 6;
           background(98, 98, 98);
-          walls(Dw1); walls(Dw2); walls(Dw3); walls(Dw4); walls(Dw5); walls(Dw6); walls(Dw7); walls(Dw8); walls(Dw9); walls(Dw10); walls(Dw11); 
-          winbox(win4);
-          PlayerHitbox(Dw1); PlayerHitbox(Dw2); PlayerHitbox(Dw3); PlayerHitbox(Dw4); PlayerHitbox(Dw5); PlayerHitbox(Dw6); PlayerHitbox(Dw7); PlayerHitbox(Dw8); PlayerHitbox(Dw9); PlayerHitbox(Dw10); PlayerHitbox(Dw11);
+          walls(Dw1); walls(Dw2); walls(Dw3); walls(Dw4); walls(Dw5); walls(Dw6); walls(Dw7); walls(Dw8); walls(Dw9); walls(Dw10); walls(Dw11); walls(Dw12);
+          winbox(win4); PHWin(win4);
+          PlayerHitbox(Dw1); PlayerHitbox(Dw2); PlayerHitbox(Dw3); PlayerHitbox(Dw4); PlayerHitbox(Dw5); PlayerHitbox(Dw6); PlayerHitbox(Dw7); PlayerHitbox(Dw8); PlayerHitbox(Dw9); PlayerHitbox(Dw10); PlayerHitbox(Dw11); PlayerHitbox(Dw12);
         }
 
-        var Dw1 = {
-          x: 500,
-          y: 690,
-          width: 300,
-          height: 14,
-        }
-        var Dw2 = {
-          x: 0,
-          y: 690,
-          width: 375,
-          height: 110,
-        }
-        var Dw3 = {
-          x: 400,
-          y: 550,
-          width: 250,
-          height: 50,
-        }
-        var Dw4 = {
-          x: 375,
-          y: 250,
-          width: 50,
-          height: 350,
-        }
-        var Dw5 = {
-          x: 600,
-          y: 400,
-          width: 200,
-          height: 50,
-        }
-        var Dw6 = {
-          x: 400,
-          y: 250,
-          width: 250,
-          height: 50,
-        }
-        var Dw7 = {
-          x: 0,
-          y: 0,
-          width: 800,
-          height: 150,
-        }
-        var Dw8 = {
-          x: 200,
-          y: 0,
-          width: 50,
-          height: 575,
-        }
-        var Dw9 = {
-          x: 0,
-          y: 250,
-          width: 50,
-          height: 800,
-        }
-        var Dw10 = {
-          x: 375,
-          y: 250,
-          width: 20,
-          height: 420 + 130,
-        }
-        var Dw11 = {
-          x: 790,
-          y: 0,
-          width: 10,
-          height: 800,
-        }
-        var win4 = {
-          x: 0,
-          y: 150,
-          width: 50,
-          height: 100,
-        }
+        var Dw1 = {x: 500,y: 690,width: 300,height: 14};
+        var Dw2 = {x: 0,y: 690,width: 375,height: 110};
+        var Dw3 = {x: 400,y: 550,width: 250,height: 50};
+        var Dw4 = {x: 375,y: 250,width: 50,height: 350};
+        var Dw5 = {x: 600,y: 400,width: 200,height: 50};
+        var Dw6 = {x: 400,y: 250,width: 250,height: 50};
+        var Dw7 = {x: 0,y: 0,width: 800,height: 150};
+        var Dw8 = {x: 200,y: 0,width: 50,height: 575};
+        var Dw9 = {x: 0,y: 250,width: 80,height: 800};
+        var Dw10 = {x: 375,y: 250,width: 20,height: 420 + 130};
+        var Dw11 = {x: 790,y: 0,width: 10,height: 800};
+        var Dw12 = {x: 0,y: 785 ,width: 800,height: 20};
+        var win4 = {x: 0,y: 150,width: 80,height: 100};
+
         function level5() {
-          console.log(scene)
+          console.log(scene);
           scene = 7;
           background(98, 98, 98);
           walls(Ew1); walls(Ew2); walls(Ew3); walls(Ew4); walls(Ew5); walls(Ew6);  walls(Ew7); walls(Ew8); walls(Ew9);
-          winbox(win5);
+          winbox(win5); PHWin(win5H);
           PlayerHitbox(Ew1); PlayerHitbox(Ew2); PlayerHitbox(Ew3); PlayerHitbox(Ew4); PlayerHitbox(Ew5); PlayerHitbox(Ew6); PlayerHitbox(Ew7); PlayerHitbox(Ew8); PlayerHitbox(Ew9);
         }
-        var win5 = {
-          x: 325,
-          y: 710,
-          width: 125,
-          height: 80,
+
+        var Ew1 = {x: 0, y: 0, width: 800, height: 150};
+        var Ew2 = {x: 0, y: 250, width: 675, height:40};
+        var Ew3 = {x: 100, y: 375, width: 700, height: 40};
+        var Ew4 = {x: 100, y: 375, width: 40, height: 325};
+        var Ew5 = {x: 250, y: 500, width: 75, height: 300};
+        var Ew6 = {x: 250, y: 500, width: 450, height: 210};
+        var Ew7 = {x: 790, y: 0, width: 10, height: 800};
+        var Ew8 = {x: 0, y: 0, width: 10, height: 800};
+        var Ew9 = {x: 0, y: 790, width: 800, height: 10};
+        var win5 = {x: 325, y: 710, width: 70, height: 80};
+        var win5H = {x: 325, y: 710, width: 60, height: 70};
+
+        function level6() {
+          console.log(scene);
+          scene = 8;
+          background(98, 98, 98);
+          walls(Fw1); walls(Fw2); walls(Fw3); walls(Fw4); walls(Fw5); walls(Fw6); walls(Fw7); walls(Fw8); walls(Fw9); walls(Fw10); walls(Fw11); walls(Fw12); walls(Fw13);
+          winbox(win6); PHWin(win6);
+          PlayerHitbox(Fw1); PlayerHitbox(Fw2); PlayerHitbox(Fw3); PlayerHitbox(Fw4); PlayerHitbox(Fw5); PlayerHitbox(Fw6); PlayerHitbox(Fw7); PlayerHitbox(Fw8); PlayerHitbox(Fw9); PlayerHitbox(Fw10); PlayerHitbox(Fw11); PlayerHitbox(Fw12); PlayerHitbox(Fw13);
         }
-        var Ew1 = {
-          x: 0,
-          y: 0,
-          width: 800,
-          height: 150,
+
+        var Fw1 = {x: 300, y: 500, width: 25, height: 300};
+        var Fw2 = {x: 450, y: 500, width: 25, height:300};
+        var Fw3 = {x: 150, y: 350, width: 500, height:30};
+        var Fw4 = {x: 150, y: 350, width: 25, height:350};
+        var Fw5 = {x: 0, y: 0, width: 325, height:260};
+        var Fw6 = {x: 450, y: 0, width: 350, height:260};
+        var Fw7 = {x: 300, y: 0, width: 25, height:250};
+        var Fw8 = {x: 450, y: 0, width: 25, height:250};
+        var Fw9 = {x: 625, y: 350, width: 25, height: 350,};
+        var Fw10 = {x: 4000, y: 250, width: 675, height:40};
+        // Border walls
+        var Fw11 = {x: 0, y: 0, width: 40, height: 800};
+        var Fw12 = {x: 760, y: 0, width: 40, height: 800};
+        var Fw13 = {x: 0, y: 780, width: 800, height: 20};
+        var win6 = {x: 325, y: 0, width: 125, height: 80};
+
+        function level7() {
+          console.log(scene);
+          scene = 9;
+          background(98, 98, 98);
+          walls(Gw1); walls(Gw2); walls(Gw3); walls(Gw4); walls(Gw5); walls(Gw6); walls(Gw7); walls(Gw8); walls(Gw9); walls(Gw10);
+          winbox(win7); PHWin(win7H);
+          PlayerHitbox(Gw1); PlayerHitbox(Gw2); PlayerHitbox(Gw3); PlayerHitbox(Gw4); PlayerHitbox(Gw5); PlayerHitbox(Gw6); PlayerHitbox(Gw7); PlayerHitbox(Gw8); PlayerHitbox(Gw9); PlayerHitbox(Gw10);
         }
-        var Ew2 = {
-          x: 0,
-          y: 250,
-          width: 675,
-          height:40,
+
+        var Gw1 = {x: 0, y: 0, width: 325, height: 100};
+        var Gw2 = {x: 100, y: 200, width: 600, height:40};
+        var Gw3 = {x: 450, y: 375, width: 250, height: 325};
+        var Gw4 = {x: 100, y: 225, width: 40, height: 450};
+        var Gw5 = {x: 250, y: 375, width: 75, height: 425};
+        var Gw6 = {x: 560, y: 0, width: 140, height: 700};
+        var Gw7 = {x: 790, y: 0, width: 10, height: 800};
+        var Gw8 = {x: 0, y: 0, width: 10, height: 800};
+        var Gw9 = {x: 0, y: 790, width: 800, height: 10};
+        var Gw10 = {x: 450, y: 0, width: 250, height: 100};
+        var win7 = {x: 700, y: 0, width: 90, height: 80};
+        var win7H = {x: 700, y: 0, width: 90, height: 30};
+
+        function level8() {
+          console.log(scene);
+          scene = 10;
+          background(98, 98, 98);
+          walls(Hw1); walls(Hw2); walls(Hw3); walls(Hw4); walls(Hw5); walls(Hw6); walls(Hw7); walls(Hw8); walls(Hw9); walls(Hw10);
+          winbox(win8); PHWin(win8);
+          PlayerHitbox(Hw1); PlayerHitbox(Hw2); PlayerHitbox(Hw3); PlayerHitbox(Hw4); PlayerHitbox(Hw5); PlayerHitbox(Hw6); PlayerHitbox(Hw7); PlayerHitbox(Hw8); PlayerHitbox(Hw9); PlayerHitbox(Hw10);
         }
-        var Ew3 = {
-          x: 100,
-          y: 375,
-          width: 700,
-          height: 40,
-        }
-        var Ew4 = {
-          x: 100,
-          y: 375,
-          width: 40,
-          height: 325,
-        }
-        var Ew5 = {
-          x: 250,
-          y: 500,
-          width: 75,
-          height: 300,
-        }
-        var Ew6 = {
-          x: 250,
-          y: 500,
-          width: 425,
-          height: 210,
-        }
-        var Ew7 = {
-          x: 790,
-          y: 0,
-          width: 10,
-          height: 800,
-        }
-        var Ew8 = {
-          x: 0,
-          y: 0,
-          width: 10,
-          height: 800,
-        }
-        var Ew9 = {
-          x: 0,
-          y: 790,
-          width: 800,
-          height: 10,
-        }
+
+        var Hw1 = {x: 150, y: 80, width: 650, height: 30};
+        var Hw2 = {x: 150, y: 80, width: 50, height: 300};
+        var Hw3 = {x: 0, y: 450, width: 700, height: 75};
+        var Hw4 = {x: 300, y: 200, width: 400, height: 250};
+        var Hw5 = {x: 670, y: 400, width: 30, height: 300};
+        var Hw6 = {x: 0, y: 600, width: 575, height: 200};
+        var Hw7 = {x: 790, y: 100, width: 15, height: 700};
+        var Hw8 = {x: 0, y: 0, width: 10, height: 500};
+        var Hw9 = {x: 0, y: 0, width: 800, height: 10};
+        var Hw10 = {x: 0, y: 790, width: 800, height: 10};
+        var win8 = {x: 0, y: 525, width: 100, height: 75};
+
+        function level9() {
+          console.log(scene);
+          scene = 11;
+          background(98, 98, 98);
+          walls(Iw1); walls(Iw2); walls(Iw3); walls(Iw4); walls(Iw5); walls(Iw6); walls(Iw7); walls(Iw8); walls(Iw9); walls(Iw10);
+          winbox(win9); PHWin(win9);
+          PlayerHitbox(Iw1); PlayerHitbox(Iw2); PlayerHitbox(Iw3); PlayerHitbox(Iw4); PlayerHitbox(Iw5); PlayerHitbox(Iw6); PlayerHitbox(Iw7); PlayerHitbox(Iw8); PlayerHitbox(Iw9); PlayerHitbox(Iw10);
+        };
+        var Iw1 = {x: 100, y: 80, width: 40, height: 750};
+        var Iw2 = {x: 100, y: 80, width: 575, height: 30};
+        var Iw3 = {x: 225, y: 200, width: 575, height: 150};
+        var Iw4 = {x: 225, y: 275, width: 40, height: 400};
+        var Iw5 = {x: 0, y: 770, width: 800, height: 30};
+        var Iw6 = {x: 250, y: 200, width: 450, height: 475};
+        var Iw7 = {x: 0, y: 0, width: 0, height: 700};
+        var Iw8 = {x: 0, y: 0, width: 800, height: 10};
+        var Iw9 = {x: 0, y: 600, width: 100, height: 200};
+        var Iw10 = {x: 790, y: 0, width: 10, height: 800};
+        var win9 = {x: 700, y: 350, width: 90, height: 75};
+
+        function level10() {
+          console.log(scene);
+          scene = 12;
+          timer += 1;
+          background (98, 98, 98);
+          walls(Jw1); walls(Jw2);
+          winbox(win10); PHWin(win10); winbox(win9);
+          PlayerHitbox(Jw1); PlayerHitbox(Jw2);
+          fill(255)
+          text("Thank you for Playing!", 50, 50);
+          textSize(30);
+          text("Go to the left to view credits", 50, 100);
+        };
+
+        var Jw1 = {x: 0, y: 0, width: 800, height: 300};
+        var Jw2 = {x: 0, y: 500, width: 800, height: 300};
+        var win10 = {x: 0, y: 300, width: 100, height: 200};
+
+
 //<!-- !  LOOK HERE IF YOU ACCIDENTALLY ENTERED A LEVEL --!>
        GSetup(); //<!--  ! Change this to Setup(); , in case you see anything other than Setup() here. --!>
       };
     };
       //  GENERAL NOTES 1. NAMING CONVENTIONS
       // You might see comments that have the following format: "//<!--" followed by a punctuation mark. This is so that the vscode BetterComments extension highlighting works, as it detects the language as HTML rather than JS.
-      // Naming convention is as follows: if you see an A, B, C, or D in from of the letter w, it is to indicate the level where the wall is location. For example, wall Aw1 is in level 1, wall Bw1 is in level 2, and so on.
-      // Abnormal scene numbers are used to indicate special case scenes
+      // Naming convention is as follows: if you see an A, B, C, or D in front of the letter w, it is to indicate the level where the wall is location. For example, wall Aw1 is in level 1, wall Bw1 is in level 2, and so on.
+      // Abnormal scene numbers are used to indicate special case scenes.
       // 2. FUNCTIONS
-      // MCC stands for Mouse Clicked Check. It is a function that checks if the mouse is clicked within the bounds of a button. Used for scene changes. SYNTAX: MCC(b1)
       // Setup should ALWAYS be the first scene displayed.
       // 3. SCENES
       // Scene 0 to 3 are the non-game scenes
