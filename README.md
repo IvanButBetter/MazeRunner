@@ -3,9 +3,10 @@ Processing.js based game for Structured Programming 2
 
 The github pages version is in the [Web Branch](https://github.com/IvanButBetter/MazeRunner/tree/web) <br>
 <br>
+Changelog: [Commit History](https://github.com/IvanButBetter/MazeRunner/commits/main/Game.html)
 # TODO: <br>
 
-<b>• Add a cutscene after beating the 10 levels <br>
+<b>• Add credit level <br>
 <b>• Store images on web so that the user can run the file with just the html file and no other files <br>
   
 # Completed TODOs: <br>
