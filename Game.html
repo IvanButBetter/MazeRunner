@@ -46,11 +46,11 @@
         img = loadImage("characterLarge.png");
       // Variables
         var scene = 0;
-        var health = 1;
         var timer = 10;
         var initTimer = 10;
         var isPlaying = false;
         var img;
+        var health = 1;
         var difficulty = 2;
         var hitboxDisplay = 0;
         var hitboxDisplayModeIndicator = false;
@@ -286,13 +286,14 @@
               y: mouseY - 20,
               width: 40,
               height: 45,
+              rounding: 2,
             };
             if (hitboxDisplay % 2 == 0) {
               noFill();
             } else {
               fill(200, 0, 0);
             };
-            rect(Hitbox.x, Hitbox.y, Hitbox.width, Hitbox.height);
+            rect(Hitbox.x, Hitbox.y, Hitbox.width, Hitbox.height, Hitbox.rounding);
             if (Hitbox.x + Hitbox.width >= wall.x && Hitbox.y + Hitbox.height >= wall.y && Hitbox.x <= (wall.x + wall.width) && Hitbox.y <= (wall.y + wall.height)) {
               console.log("Hit detected on", wall);
               gameend();
@@ -370,17 +371,22 @@
           } if (scene === 12 && isPlaying === true) {
             level10();
           } if (scene === 13) {
-            GameWin();
+            Credits();
           }
       };
           //<!-- * Levels | This part of the code can not break, if you are here to fix then look elsewhere.
 
+            // Universal Border Walls
+            var BorderW1 = {x: 0, y: 0, width: 800, height: 1};
+            var BorderW2 = {x: 0, y:0, width: 1, height: 800};
+            var BorderW3 = {x: 0, y: 799, width: 800, height: 1};
+            var BorderW4 = {x: 799, y: 0, width: 1, height: 800};
         function level1() {
           scene = 3;
           background(98, 98, 98);
-          walls(Aw1); walls(Aw2); walls(Aw3); walls(Aw4); walls(Aw5); walls(Aw6); walls(Aw7); walls(Aw8);
+          walls(Aw1); walls(Aw2); walls(Aw3); walls(Aw4); walls(Aw5); walls(Aw6); walls(Aw7); walls(Aw8); walls(BorderW1); walls(BorderW2); walls(BorderW3); walls(BorderW4);
           winbox(win1); PHWin(win1);
-          PlayerHitbox(Aw1); PlayerHitbox(Aw2); PlayerHitbox(Aw3); PlayerHitbox(Aw4); PlayerHitbox(Aw5); PlayerHitbox(Aw6); PlayerHitbox(Aw7); PlayerHitbox(Aw8);
+          PlayerHitbox(Aw1); PlayerHitbox(Aw2); PlayerHitbox(Aw3); PlayerHitbox(Aw4); PlayerHitbox(Aw5); PlayerHitbox(Aw6); PlayerHitbox(Aw7); PlayerHitbox(Aw8); PlayerHitbox(BorderW1); PlayerHitbox(BorderW2); PlayerHitbox(BorderW3); PlayerHitbox(BorderW4);
         };
 
         var Aw1 = {x: 0,y: 0,width: 250,height: 100};
@@ -398,7 +404,7 @@
           background(98, 98, 98);
           walls(Bw1); walls(Bw2); walls(Bw3); walls(Bw4); walls(Bw5); walls(Bw6); walls(Bw7); walls(Bw8); walls(Bw9);
           winbox(win2); PHWin(win2);
-          PlayerHitbox(Bw1); PlayerHitbox(Bw2); PlayerHitbox(Bw3); PlayerHitbox(Bw4); PlayerHitbox(Bw5); PlayerHitbox(Bw6); PlayerHitbox(Bw7); PlayerHitbox(Bw8); PlayerHitbox(Bw9);
+          PlayerHitbox(Bw1); PlayerHitbox(Bw2); PlayerHitbox(Bw3); PlayerHitbox(Bw4); PlayerHitbox(Bw5); PlayerHitbox(Bw6); PlayerHitbox(Bw7); PlayerHitbox(Bw8); PlayerHitbox(Bw9); PlayerHitbox(BorderW1); PlayerHitbox(BorderW2); PlayerHitbox(BorderW3); PlayerHitbox(BorderW4);
         };
         var Bw1 = {x: 0,y: 0,width: 250,height: 410};
         var Bw2 = {x: 0,y: 350,width: 650,height: 70};
@@ -417,7 +423,7 @@
           background(98, 98, 98);
           walls(Cw1); walls(Cw2); walls(Cw3); walls(Cw4); walls(Cw5); walls(Cw6); walls(Cw7); walls(Cw8); walls(Cw9); walls(Cw10);
           winbox(win3); PHWin(win3);
-          PlayerHitbox(Cw1); PlayerHitbox(Cw2); PlayerHitbox(Cw3); PlayerHitbox(Cw4); PlayerHitbox(Cw5); PlayerHitbox(Cw6); PlayerHitbox(Cw7); PlayerHitbox(Cw8); PlayerHitbox(Cw9); PlayerHitbox(Cw10);
+          PlayerHitbox(Cw1); PlayerHitbox(Cw2); PlayerHitbox(Cw3); PlayerHitbox(Cw4); PlayerHitbox(Cw5); PlayerHitbox(Cw6); PlayerHitbox(Cw7); PlayerHitbox(Cw8); PlayerHitbox(Cw9); PlayerHitbox(Cw10); PlayerHitbox(BorderW1); PlayerHitbox(BorderW2); PlayerHitbox(BorderW3); PlayerHitbox(BorderW4);
         };
 
         var Cw1 = {x: 350,y: 685,width: 450,height: 20};
@@ -430,7 +436,7 @@
         var Cw8 = {x: 0,y: 0,width: 800,height: 50};
         var Cw9 = {x: 0,y: 0,width: 75,height: 800};
         var Cw10 = {x: 0,y: 780,width: 800,height: 25};
-        var win3 = {x: 720,y: 705,width: 80,height: 75};
+        var win3 = {x: 720,y: 705 ,width: 80,height: 75}; 
 
         function level4() {
           console.log(scene);
@@ -438,7 +444,7 @@
           background(98, 98, 98);
           walls(Dw1); walls(Dw2); walls(Dw3); walls(Dw4); walls(Dw5); walls(Dw6); walls(Dw7); walls(Dw8); walls(Dw9); walls(Dw10); walls(Dw11); walls(Dw12);
           winbox(win4); PHWin(win4);
-          PlayerHitbox(Dw1); PlayerHitbox(Dw2); PlayerHitbox(Dw3); PlayerHitbox(Dw4); PlayerHitbox(Dw5); PlayerHitbox(Dw6); PlayerHitbox(Dw7); PlayerHitbox(Dw8); PlayerHitbox(Dw9); PlayerHitbox(Dw10); PlayerHitbox(Dw11); PlayerHitbox(Dw12);
+          PlayerHitbox(Dw1); PlayerHitbox(Dw2); PlayerHitbox(Dw3); PlayerHitbox(Dw4); PlayerHitbox(Dw5); PlayerHitbox(Dw6); PlayerHitbox(Dw7); PlayerHitbox(Dw8); PlayerHitbox(Dw9); PlayerHitbox(Dw10); PlayerHitbox(Dw11); PlayerHitbox(Dw12); PlayerHitbox(BorderW1); PlayerHitbox(BorderW2); PlayerHitbox(BorderW3); PlayerHitbox(BorderW4);
         }
 
         var Dw1 = {x: 500,y: 690,width: 300,height: 14};
@@ -461,7 +467,7 @@
           background(98, 98, 98);
           walls(Ew1); walls(Ew2); walls(Ew3); walls(Ew4); walls(Ew5); walls(Ew6);  walls(Ew7); walls(Ew8); walls(Ew9);
           winbox(win5); PHWin(win5H);
-          PlayerHitbox(Ew1); PlayerHitbox(Ew2); PlayerHitbox(Ew3); PlayerHitbox(Ew4); PlayerHitbox(Ew5); PlayerHitbox(Ew6); PlayerHitbox(Ew7); PlayerHitbox(Ew8); PlayerHitbox(Ew9);
+          PlayerHitbox(Ew1); PlayerHitbox(Ew2); PlayerHitbox(Ew3); PlayerHitbox(Ew4); PlayerHitbox(Ew5); PlayerHitbox(Ew6); PlayerHitbox(Ew7); PlayerHitbox(Ew8); PlayerHitbox(Ew9); PlayerHitbox(BorderW1); PlayerHitbox(BorderW2); PlayerHitbox(BorderW3); PlayerHitbox(BorderW4);
         }
 
         var Ew1 = {x: 0, y: 0, width: 800, height: 150};
@@ -482,7 +488,7 @@
           background(98, 98, 98);
           walls(Fw1); walls(Fw2); walls(Fw3); walls(Fw4); walls(Fw5); walls(Fw6); walls(Fw7); walls(Fw8); walls(Fw9); walls(Fw10); walls(Fw11); walls(Fw12); walls(Fw13);
           winbox(win6); PHWin(win6);
-          PlayerHitbox(Fw1); PlayerHitbox(Fw2); PlayerHitbox(Fw3); PlayerHitbox(Fw4); PlayerHitbox(Fw5); PlayerHitbox(Fw6); PlayerHitbox(Fw7); PlayerHitbox(Fw8); PlayerHitbox(Fw9); PlayerHitbox(Fw10); PlayerHitbox(Fw11); PlayerHitbox(Fw12); PlayerHitbox(Fw13);
+          PlayerHitbox(Fw1); PlayerHitbox(Fw2); PlayerHitbox(Fw3); PlayerHitbox(Fw4); PlayerHitbox(Fw5); PlayerHitbox(Fw6); PlayerHitbox(Fw7); PlayerHitbox(Fw8); PlayerHitbox(Fw9); PlayerHitbox(Fw10); PlayerHitbox(Fw11); PlayerHitbox(Fw12); PlayerHitbox(Fw13); PlayerHitbox(BorderW1); PlayerHitbox(BorderW2); PlayerHitbox(BorderW3); PlayerHitbox(BorderW4);
         }
 
         var Fw1 = {x: 300, y: 500, width: 25, height: 300};
@@ -507,7 +513,7 @@
           background(98, 98, 98);
           walls(Gw1); walls(Gw2); walls(Gw3); walls(Gw4); walls(Gw5); walls(Gw6); walls(Gw7); walls(Gw8); walls(Gw9); walls(Gw10);
           winbox(win7); PHWin(win7H);
-          PlayerHitbox(Gw1); PlayerHitbox(Gw2); PlayerHitbox(Gw3); PlayerHitbox(Gw4); PlayerHitbox(Gw5); PlayerHitbox(Gw6); PlayerHitbox(Gw7); PlayerHitbox(Gw8); PlayerHitbox(Gw9); PlayerHitbox(Gw10);
+          PlayerHitbox(Gw1); PlayerHitbox(Gw2); PlayerHitbox(Gw3); PlayerHitbox(Gw4); PlayerHitbox(Gw5); PlayerHitbox(Gw6); PlayerHitbox(Gw7); PlayerHitbox(Gw8); PlayerHitbox(Gw9); PlayerHitbox(Gw10); PlayerHitbox(BorderW1); PlayerHitbox(BorderW2); PlayerHitbox(BorderW3); PlayerHitbox(BorderW4);
         }
 
         var Gw1 = {x: 0, y: 0, width: 325, height: 100};
@@ -528,8 +534,8 @@
           scene = 10;
           background(98, 98, 98);
           walls(Hw1); walls(Hw2); walls(Hw3); walls(Hw4); walls(Hw5); walls(Hw6); walls(Hw7); walls(Hw8); walls(Hw9); walls(Hw10);
-          winbox(win8); PHWin(win8);
-          PlayerHitbox(Hw1); PlayerHitbox(Hw2); PlayerHitbox(Hw3); PlayerHitbox(Hw4); PlayerHitbox(Hw5); PlayerHitbox(Hw6); PlayerHitbox(Hw7); PlayerHitbox(Hw8); PlayerHitbox(Hw9); PlayerHitbox(Hw10);
+          winbox(win8); PHWin(win8H);
+          PlayerHitbox(Hw1); PlayerHitbox(Hw2); PlayerHitbox(Hw3); PlayerHitbox(Hw4); PlayerHitbox(Hw5); PlayerHitbox(Hw6); PlayerHitbox(Hw7); PlayerHitbox(Hw8); PlayerHitbox(Hw9); PlayerHitbox(Hw10); PlayerHitbox(BorderW1); PlayerHitbox(BorderW2); PlayerHitbox(BorderW3); PlayerHitbox(BorderW4);
         }
 
         var Hw1 = {x: 150, y: 80, width: 650, height: 30};
@@ -540,9 +546,10 @@
         var Hw6 = {x: 0, y: 600, width: 575, height: 200};
         var Hw7 = {x: 790, y: 100, width: 15, height: 700};
         var Hw8 = {x: 0, y: 0, width: 10, height: 500};
-        var Hw9 = {x: 0, y: 0, width: 800, height: 10};
+        var Hw9 = {x: 0, y: 0, width: 800, height: 2};
         var Hw10 = {x: 0, y: 790, width: 800, height: 10};
         var win8 = {x: 0, y: 525, width: 100, height: 75};
+        var win8H = {x:0, y:525, width: 40, height: 75};
 
         function level9() {
           console.log(scene);
@@ -550,7 +557,7 @@
           background(98, 98, 98);
           walls(Iw1); walls(Iw2); walls(Iw3); walls(Iw4); walls(Iw5); walls(Iw6); walls(Iw7); walls(Iw8); walls(Iw9); walls(Iw10);
           winbox(win9); PHWin(win9);
-          PlayerHitbox(Iw1); PlayerHitbox(Iw2); PlayerHitbox(Iw3); PlayerHitbox(Iw4); PlayerHitbox(Iw5); PlayerHitbox(Iw6); PlayerHitbox(Iw7); PlayerHitbox(Iw8); PlayerHitbox(Iw9); PlayerHitbox(Iw10);
+          PlayerHitbox(Iw1); PlayerHitbox(Iw2); PlayerHitbox(Iw3); PlayerHitbox(Iw4); PlayerHitbox(Iw5); PlayerHitbox(Iw6); PlayerHitbox(Iw7); PlayerHitbox(Iw8); PlayerHitbox(Iw9); PlayerHitbox(Iw10); PlayerHitbox(BorderW1); PlayerHitbox(BorderW2); PlayerHitbox(BorderW3); PlayerHitbox(BorderW4);
         };
         var Iw1 = {x: 100, y: 80, width: 40, height: 750};
         var Iw2 = {x: 100, y: 80, width: 575, height: 30};
@@ -577,11 +584,34 @@
           textSize(30);
           text("Go to the left to view credits", 50, 100);
         };
-
         var Jw1 = {x: 0, y: 0, width: 800, height: 300};
         var Jw2 = {x: 0, y: 500, width: 800, height: 300};
         var win10 = {x: 0, y: 300, width: 100, height: 200};
 
+        function Credits() {
+          isPlaying = false;
+          console.log(scene);
+          scene = 13;
+          background(98, 98, 98);
+          fill(255);
+          textSize(30);
+          text("Credits", 50, 50);
+          textSize(20);
+          text("Game Design: [redact]", 50, 100);
+          text("Programming: [redact]", 50, 150);
+          text("Art made with Pixilart.com", 50, 200);
+          text("Playtesters: [redact], [redact]", 50, 250);
+          text("Press 'R' to return to the main menu", 50, 750);
+          keyPressed = function() {
+            if (keyCode == R) {
+              scene = 0;
+              isPlaying = false;
+              timer = 10;
+              initTimer = 10;
+              GSetup();
+            };
+          };
+        };
 
 //<!-- !  LOOK HERE IF YOU ACCIDENTALLY ENTERED A LEVEL --!>
        GSetup(); //<!--  ! Change this to Setup(); , in case you see anything other than Setup() here. --!>
