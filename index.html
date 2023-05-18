@@ -13,7 +13,7 @@
       #embed {
         position: absolute;
         top: 100px;
-        left: 900px;
+        left: 900px; 
         max-width: 1000px;
         height: 700px;
         background-color: #383837;
@@ -55,22 +55,101 @@
       with (processingInstance) {
         size(800, 800); 
         frameRate(60);
+      // FUNCTION THAT INITIALIZES THE GAME - IT MUST BE gameSetup()
+      gameSetup();
       // Variables
         var scene = 0;
-        var timer = 10;
-        var initTimer = 10;
+        var wins = 0;
         var isPlaying = false;
         var difficulty = 2;
-        var win = 0;
+        var initialDifficulty = 2;
+        var timer = 10;
+        var initialTimer = 10;
+        var blinkTimer = 10;
+        var speedrunTime = 0;
+        var speedrunTimerIsOn = false;
+        var personalBest = 999;
         // Buttons
-        var StartBtn = {x: 300, y: 650, width: 150, height: 75, rounding: 10, fill: 166, textSize: 30, text: "Start"};
-        var RestartBtn = {x: 300, y: 650, width: 150, height: 75, rounding: 10, fill: 166, textSize: 30, text: "Restart"};
-        var TScreenBtn = {x: 600, y: 650, width: 150, height: 75, rounding: 10, fill: 166, textSize: 28, text: "Title Screen"};
-        var DiffSelectBtn = {x: 600, y: 650, width: 150, height: 75, rounding: 10, fill: 166, textSize: 20, text: "Difficulty Select"};
-        var DiffEasyBtn = {x: 100, y: 600, width: 150, height: 75, rounding: 10, fill: 166, textSize: 30, text: "Easy"};
-        var DiffNormalBtn = {x: 350, y: 600, width: 150, height: 75, rounding: 10, fill: 166, textSize: 30, text: "Normal"};
-        var DiffHardBtn = {x: 600, y: 600, width: 150, height: 75, rounding: 10, fill: 166, textSize: 30, text: "Hard"};
-        
+        var startBtn = {
+          x: 300,
+          y: 650,
+          width: 150,
+          height: 75,
+          rounding: 10,
+          fill: 166,
+          textSize: 30,
+          text: "Start",
+        };
+        var restartBtn = {
+          x: 300,
+          y: 650,
+          width: 150,
+          height: 75,
+          rounding: 10,
+          fill: 166,
+          textSize: 30,
+          text: "Restart",
+        };
+        var titleScreenBtn = {
+          x: 600,
+          y: 650,
+          width: 150,
+          height: 75,
+          rounding: 10,
+          fill: 166,
+          textSize: 28,
+          text: "Title Screen",
+        };
+        var diffSelectBtn = {
+          x: 600,
+          y: 650,
+          width: 150,
+          height: 75,
+          rounding: 10,
+          fill: 166,
+          textSize: 20,
+          text: "Difficulty Select",
+        };
+        var diffEastBtn = {
+          x: 100,
+          y: 600,
+          width: 150,
+          height: 75,
+          rounding: 10,
+          fill: 166,
+          textSize: 30,
+          text: "Easy",
+        };
+        var diffNormalBtn = {
+          x: 350,
+          y: 600,
+          width: 150,
+          height: 75,
+          rounding: 10,
+          fill: 166,
+          textSize: 30,
+          text: "Normal",
+        };
+        var diffHardBtn = {
+          x: 600,
+          y: 600,
+          width: 150,
+          height: 75,
+          rounding: 10,
+          fill: 166,
+          textSize: 30,
+          text: "Hard",
+        };
+        var speedrunTimerBtn = {
+          x: 50,
+          y: 650,
+          width: 150,
+          height: 75,
+          rounding: 10,
+          fill: 166,
+          textSize: 20,
+          text: "Speedrun Timer",
+        }
         function btnGen(btn) {  // Function to draw buttons
             fill(btn.fill);
             rect(btn.x, btn.y, btn.width, btn.height, btn.rounding);
@@ -79,21 +158,20 @@
             textAlign(CENTER, CENTER);
             text(btn.text, btn.x + btn.width / 2, btn.y + btn.height / 2);
         };
-        
         function walls(wall) { // Generating Level Objects
           fill(16, 16, 16);
           noStroke();
           rect(wall.x, wall.y, wall.width, wall.height, wall.rounding);
         };
-        function winbox(win) { 
+        function winBox(win) { 
           fill(30, 188, 30);
           rect(win.x, win.y, win.width, win.height);
         };
-        function MouseClickedCheck(btn) { // Mouse Clicked Check for buttons
+        function mouseClickedCheck(btn) { // Mouse Clicked Check for buttons
             console.log("btn:", btn);
             return (mouseX >= btn.x && mouseX <= (btn.x + btn.width) && mouseY >= btn.y && mouseY <= (btn.y + btn.height));
         };
-        function PlayerHitbox(wall) { // Player Hitbox
+        function playerHitbox(wall) { // Player Hitbox
           if (isPlaying === true) {
             var Hitbox = { // True player hitbox, seperate from model
               x: mouseX - 20,
@@ -102,25 +180,27 @@
               height: 40,
               rounding: 2,
             };
+            noStroke();
+            noFill();
             rect(Hitbox.x, Hitbox.y, Hitbox.width, Hitbox.height, Hitbox.rounding);
             if (Hitbox.x + Hitbox.width >= wall.x && Hitbox.y + Hitbox.height >= wall.y && Hitbox.x <= (wall.x + wall.width) && Hitbox.y <= (wall.y + wall.height)) {
               console.log("Hit detected on", wall);
-              gameend();
+              gameEnd();
             };
           };
         };
-        function PHWin(win) { // The same player hitbox function, but for the win boxdue to technicallities it needs to be seperate.
+        function winHitbox(win) { // The same player hitbox function, but for the win boxdue to technicallities it needs to be seperate.
           if (isPlaying === true) {
             var HitboxTwo = {
               x: mouseX - 20,
               y: mouseY - 20,
               width: 40,
               height: 45,
-            } 
+            }; 
             if (HitboxTwo.x + HitboxTwo.width >= win.x && HitboxTwo.y + HitboxTwo.height >= win.y && HitboxTwo.x <= (win.x + win.width) && HitboxTwo.y <= (win.y + win.height)) {
               scene = scene + 1;
               levelLoad();
-              if (scene <= 7) { // Balanced Timers
+              if (scene <= 7) { // Balanced timers
                 timer = timer + 6;
               } if (scene >= 8) {
                 timer = timer + 7.5;
@@ -132,18 +212,19 @@
           if (isPlaying === true) {// Draw levels
             textSize(25);
             levelLoad();
-            PlayerModel();
+            playerModel();
+            speedrunTimer();
             if (difficulty != 1) { // Timer ON/OFF
-              Timers();
+              timers();              
             };
-          } if (isPlaying === false && scene === 666) { // Redraws gameend in order to avoid overlapping drawings.
-            gameend();
+          } if (isPlaying === false && scene === 666) { // Redraws gameEnd in order to avoid overlapping drawings.
+            gameEnd();
           };
         };
-        function PlayerModel() { // Not the actual hitbox
+        function playerModel() { // Not the actual hitbox
           if (isPlaying === true) {
-            stroke(0)
-            strokeWeight(4.5)
+            stroke(0);
+            strokeWeight(4.5);
             fill(224, 150, 96);
             rect(mouseX - 20, mouseY - 20, 40, 40); // body
             ellipse(mouseX - 5, mouseY - 6, 1, 1); // eyes
@@ -154,66 +235,91 @@
             line(mouseX - 2, mouseY + 5, mouseX + 2, mouseY + 5);
             line(mouseX - 10, mouseY - 15, mouseX - 1, mouseY - 10); // brows
             line(mouseX + 10, mouseY - 15, mouseX + 1, mouseY - 10);
+            blinkTimer++;
+            if (blinkTimer % 900 < 7) { // Makes the eyes blink
+              stroke(224, 150, 96);
+              strokeWeight(5);
+              ellipse(mouseX + 5, mouseY - 6, 1, 1);
+              ellipse(mouseX - 5, mouseY - 6, 1, 1);
+              noStroke();
+            } else if (blinkTimer % 900 != 0) {
+                fill(0);
+                ellipse(mouseX - 5, mouseY - 6, 1, 1);
+                ellipse(mouseX + 5, mouseY - 6, 1, 1);
+            };
           };
         };
-        function Timers() {
+        function timers() {
           timer = timer - 1/60; // Set this to your framerate.
           fill(255);
           text(timer, 50, 25);
-          PlayerDeath();
+          playerDeath();
           if (isPlaying === false) {
-            timer = initTimer; // Reset timer
+            timer = initialTimer; // Reset timer
           };
         };
-        function PlayerDeath() {  // Make sure u die
+        function speedrunTimer() { // Speedrun timer
+          if (isPlaying === true) {
+            speedrunTime = speedrunTime + 0.016665;
+            console.log(speedrunTime);
+            fill(255);
+            if (speedrunTimerIsOn === true) {
+              text(speedrunTime, 50, 785);
+            };
+          } if (isPlaying === false) {
+            speedrunTime = 0;
+          };
+        };
+        function playerDeath() {  // Make sure u die
           if (isPlaying === true) {
             if (timer <= 0) {
               isPlaying = false;
-              gameend();
+              gameEnd();
             };
           };
         };
         function levelLoad() { // Loads levels based on scene value
-          if (scene === 3 && isPlaying === true) {
-            level1();
-          } if (scene === 4 && isPlaying === true) {
-            level2();
-          } if (scene === 5 && isPlaying === true) {
-            level3();
-          } if (scene === 6 && isPlaying === true) {
-            level4();
-          } if (scene === 7 && isPlaying === true) {
-            level5();
-          } if (scene === 8 && isPlaying === true) {
-            level6();
-          } if (scene === 9 && isPlaying === true) {
-            level7();
-          } if (scene === 10 && isPlaying === true) {
-            level8();
-          } if (scene === 11 && isPlaying === true) {
-            level9();
-          } if (scene === 12 && isPlaying === true) {
-            level10();
-          } if (scene === 13) {
-            Credits();
-          }
-        };
-
-        function GSetup() { // Title Screen, unrelated to the real Setup() in P.js
+          if (isPlaying === true) {
+            if (scene === 3) {
+              level1();
+            } if (scene === 4) {
+              level2();
+            } if (scene === 5) {
+              level3();
+            } if (scene === 6) {
+              level4();
+            } if (scene === 7) {
+              level5();
+            } if (scene === 8) {
+              level6();
+            } if (scene === 9) {
+              level7();
+            } if (scene === 10) {
+              level8();
+            } if (scene === 11) {
+              level9();
+            } if (scene === 12) {
+              level10();
+            } if (scene === 13) {
+              Credits();
+            };
+          };
+        }; 
+        function gameSetup() { // This is the title screen
           scene = 1;
-          textAlign(LEFT, TOP);
+          textAlign(BOTTOM, CENTER);
           background(60);
           fill(255, 255, 255);
           textSize(75);
-          text("Maze Runner", 200, 400);
+          text("Maze Runner", 200, 350);
           textSize(45);
-          text("Click anywhere to start", 225, 500);
+          text("Click anywhere to start", 201, 450);
           mouseClicked = function() {
             tutorial();
           };
-          if (win >= 1) {
+          if (wins >= 1) {
             textSize(25);
-            text("You have won " + win + " times.", 10, 10);
+            text("Your personal best time is " + personalBest, 201, 525);
           };
         };
         function tutorial() {
@@ -234,25 +340,30 @@
           text("With your mouse, guide the cube to escape the maze.", 50, 400, 600, 700);
           fill(240, 0, 0);
           text("The game is meant to be hard, don't give up!", 50, 500);
-          fill(255);
-          btnGen(StartBtn);
-          btnGen(DiffSelectBtn);
-          textSize(20);
+          btnGen(startBtn);
+          btnGen(diffSelectBtn);
+          btnGen(speedrunTimerBtn)
           textSize(15);
           fill(255);
           text("(Default Difficulty is Normal)", 665, 750);
           mouseClicked = function() {
-            if (MouseClickedCheck(StartBtn)) {
+            if (mouseClickedCheck(startBtn)) {
               level1();
               isPlaying = true;
-            } if (MouseClickedCheck(DiffSelectBtn)) {
-              DifficultySelect();
+              timer = initialTimer;
+            } if (mouseClickedCheck(diffSelectBtn)) {
+              difficultySelect();
+            } if (mouseClickedCheck(speedrunTimerBtn) && speedrunTimerIsOn === false) {
+              speedrunTimer();
+              speedrunTimerIsOn = true;
+            } else if (mouseClickedCheck(speedrunTimerBtn) && speedrunTimerIsOn === true) {
+              speedrunTimerIsOn = false;
             };
           };
         };
-        function DifficultySelect() {
-          textAlign(LEFT, TOP);
+        function difficultySelect() {
           scene = 777; // Special Scene
+          textAlign(LEFT, TOP);
           background(60);
           fill(255);
           textSize(75);
@@ -263,47 +374,50 @@
           text("Hard makes the timer actually have consequences. Intended for experienced players.", 10, 250);
           text("Normal is the default value. Gives you time to make mistakes. This is the default", 10, 300);
           text("Easy is for those who want to take the game slowly without having to worry about time.", 10, 350);
-          btnGen(DiffEasyBtn);
-          btnGen(DiffNormalBtn);
-          btnGen(DiffHardBtn);
+          btnGen(diffEastBtn);
+          btnGen(diffNormalBtn);
+          btnGen(diffHardBtn);
           mouseClicked = function() {
-            if (MouseClickedCheck(DiffEasyBtn)) {
+            if (mouseClickedCheck(diffEastBtn)) {
               difficulty = 1;
+              initialDifficulty = 1;
               timer = timer + 25;
-              initTimer = 35;
+              initialTimer = 35;
               tutorial();
-            } if (MouseClickedCheck(DiffNormalBtn)) {
+            } if (mouseClickedCheck(diffNormalBtn)) {
               difficulty = 2;
-              initTimer = 10;
+              initialDifficulty = 1;
+              initialTimer = 10;
               tutorial();
-            } if (MouseClickedCheck(DiffHardBtn)) {
+            } if (mouseClickedCheck(diffHardBtn)) {
               difficulty = 3;
+              initialDifficulty = 1;
               timer = timer - 5;
-              initTimer = 5;
+              initialTimer = 5;
               tutorial();
             };
           };
         };
-        function gameend() { // Shows when you die
+        function gameEnd() { // Shows when you die
           console.log("Game Over");
-          background(0);
           isPlaying = false;
           scene = 666;
-          background(0, 0, 0);
+          blinkTimer = 10;
+          textAlign(LEFT, TOP);
+          background(0);
           textSize(75);
           fill(255, 0, 0);
-          textAlign(LEFT, TOP);
           text("You Died", 250, 350);
           textSize(45);
           text("Try Again?", 300, 450);
-          btnGen(RestartBtn);
-          btnGen(TScreenBtn);
+          btnGen(restartBtn);
+          btnGen(titleScreenBtn);
           mouseClicked = function() {
-            if (MouseClickedCheck(RestartBtn)) {
+            if (mouseClickedCheck(restartBtn)) {
               level1();
               isPlaying = true;
-            } if (MouseClickedCheck(TScreenBtn)) {
-              GSetup();
+            } if (mouseClickedCheck(titleScreenBtn)) {
+              gameSetup();
               isPlaying = false;
             };
           };
@@ -315,9 +429,9 @@
           background(98, 98, 98);
           for (var i = 0; i < LevelOneWallsList.length; i++) {
             walls(LevelOneWallsList[i]);
-            PlayerHitbox(LevelOneWallsList[i]);
-          } winbox(win1);
-          PHWin(win1);
+            playerHitbox(LevelOneWallsList[i]);
+          } winBox(win1);
+          winHitbox(win1);
         };
 
         var LevelOneWallsList = [
@@ -337,11 +451,11 @@
           scene = 4;
           noStroke();
           background(98, 98, 98);
-          winbox(win2); 
-          PHWin(win2);
+          winBox(win2); 
+          winHitbox(win2);
           for (var i = 0; i < LevelTwoWalls.length; i++) {
             walls(LevelTwoWalls[i]);
-            PlayerHitbox(LevelTwoWalls[i]);
+            playerHitbox(LevelTwoWalls[i]);
           };
         };
         var LevelTwoWalls = [
@@ -364,11 +478,11 @@
           scene = 5;
           noStroke();
           background(98, 98, 98);
-          winbox(win3);
-          PHWin(win3);
+          winBox(win3);
+          winHitbox(win3);
           for (var i = 0; i < LevelThreeWalls.length; i++) {
             walls(LevelThreeWalls[i]);
-            PlayerHitbox(LevelThreeWalls[i]);
+            playerHitbox(LevelThreeWalls[i]);
           };
         };
 
@@ -391,13 +505,13 @@
           scene = 6;
           noStroke();
           background(98, 98, 98);
-          winbox(win4);
-          PHWin(win4);
+          winBox(win4);
+          winHitbox(win4);
           for (var i = 0; i < LevelFourWalls.length; i++) {
             walls(LevelFourWalls[i]);
-            PlayerHitbox(LevelFourWalls[i]);
+            playerHitbox(LevelFourWalls[i]);
           };
-        }
+        };
 
         var LevelFourWalls = [
           {x: 500, y: 690, width: 300, height: 14},
@@ -419,13 +533,13 @@
           noStroke();
           scene = 7;
           background(98, 98, 98);
-          winbox(win5);
-          PHWin(win5H);
+          winBox(win5);
+          winHitbox(win5H);
           for (var i = 0; i < LevelFiveWalls.length; i++) {
             walls(LevelFiveWalls[i]);
-            PlayerHitbox(LevelFiveWalls[i]);
+            playerHitbox(LevelFiveWalls[i]);
           };
-        }
+        };
 
         var LevelFiveWalls = [
           {x: 0, y: 0, width: 800, height: 150},
@@ -445,13 +559,13 @@
           noStroke();
           scene = 8;
           background(98, 98, 98);
-          winbox(win6);
-          PHWin(win6);
+          winBox(win6);
+          winHitbox(win6);
           for (var i = 0; i < LevelSixWalls.length; i++) {
             walls(LevelSixWalls[i]);
-            PlayerHitbox(LevelSixWalls[i]);
+            playerHitbox(LevelSixWalls[i]);
           };
-        }
+        };
 
         var LevelSixWalls = [
           {x: 300, y: 500, width: 25, height: 300},
@@ -474,13 +588,13 @@
           noStroke();
           scene = 9;
           background(98, 98, 98);
-          winbox(win7);
-          PHWin(win7H);
+          winBox(win7);
+          winHitbox(win7H);
           for (var i = 0; i < LevelSevenWalls.length; i++) {
             walls(LevelSevenWalls[i]);
-            PlayerHitbox(LevelSevenWalls[i]);
+            playerHitbox(LevelSevenWalls[i]);
           };
-        }
+        };
 
         var LevelSevenWalls = [
           {x: 0, y: 0, width: 325, height: 100},
@@ -502,12 +616,11 @@
           noStroke();
           scene = 10;
           background(98, 98, 98);
-          winbox(win8);
-          PHWin(win8H);
+          winBox(win8);
+          winHitbox(win8H);
           for (var i = 0; i < LevelEightWalls.length; i++) {
             walls(LevelEightWalls[i]);
-            PlayerHitbox(LevelEightWalls[i]);
-          
+            playerHitbox(LevelEightWalls[i]);
           };
         };
 
@@ -531,11 +644,11 @@
           noStroke();
           scene = 11;
           background(98, 98, 98);
-          winbox(win9);
-          PHWin(win9);
+          winBox(win9);
+          winHitbox(win9);
           for (var i = 0; i < LevelNineWalls.length; i++) {
             walls(LevelNineWalls[i]);
-            PlayerHitbox(LevelNineWalls[i]);
+            playerHitbox(LevelNineWalls[i]);
           };
         };
         var LevelNineWalls = [
@@ -560,9 +673,9 @@
           difficulty = 1;
           background (98, 98, 98);
           walls(Jw1); walls(Jw2);
-          winbox(win10);
-          PHWin(win10);
-          PlayerHitbox(Jw1); PlayerHitbox(Jw2);
+          winBox(win10);
+          winHitbox(win10);
+          playerHitbox(Jw1); playerHitbox(Jw2);
           fill(255)
           text("Thank you for Playing!", 50, 50);
           textSize(30);
@@ -582,31 +695,29 @@
           textSize(30);
           text("Credits", 50, 50);
           textSize(20);
-          text("Game Design: Ivan Bondarenko", 50, 100);
-          text("Programming: Ivan Bondarenko", 50, 150);
-          text("Playtester(s): James Ayudan", 50, 200);
+          text("Game Design: @IvanButBetter", 50, 100);
+          text("Programming: @@IvanButBetter", 50, 150);
+          text("Playtester: J.A", 50, 200);
           text("Press anywhere to return to the main menu", 50, 750);
-          win = win + 1;
+          text("Built with Processing.js", 50, 250);
+          wins++;
+          if (speedrunTime < personalBest) {
+            personalBest = speedrunTime.toFixed(2);
+          };
           mouseClicked = function() {
             scene = 0;
             isPlaying = false;
-            timer = 10;
-            initTimer = 10;
-            GSetup();
+            timer = initialTimer;
+            speedrunTime = 0;
+            difficulty = initialDifficulty;
+            gameSetup();
           };
         };
-
-//<!-- !  LOOK HERE IF YOU ACCIDENTALLY ENTERED A LEVEL --!>
-       GSetup(); //<!--  ! Change this to Setup(); , in case you see anything other than Setup() here. --!>
       };
     };
-      //  GENERAL NOTES 1. NAMING CONVENTIONS
-      // You might see comments that have the following format: "//<!--" followed by a punctuation mark. This is so that the vscode BetterComments extension highlighting works, as it detects the language as HTML rather than JS.
-      // Abnormal scene numbers are used to indicate special scenes.
-      // Scene 0 to 3 are the non-game scenes
-      // Scene 3 to scene 12 are the levels
-      // Scene 666 = Game Over
-      // Scene 13 = Win Screen
+
+    // Scenes 0-2 are menu, scenes 3 to 12 are game levels, scene 13 is credits. 666 is game over.
+    // function mouseclicked() & function draw() do not behave the same as mouseclicked = function() and draw = function()
     var canvas = document.getElementById("mycanvas"); 
     var processingInstance = new Processing(canvas, programCode); 
   </script>
