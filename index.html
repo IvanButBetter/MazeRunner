@@ -70,7 +70,7 @@
         var speedrunTimerIsOn = false;
         var personalBest = 999;
         // Buttons
-        var startBtn = {
+        let startBtn = {
           x: 300,
           y: 650,
           width: 150,
@@ -80,7 +80,7 @@
           textSize: 30,
           text: "Start",
         };
-        var restartBtn = {
+        let restartBtn = {
           x: 300,
           y: 650,
           width: 150,
@@ -90,7 +90,7 @@
           textSize: 30,
           text: "Restart",
         };
-        var titleScreenBtn = {
+        let titleScreenBtn = {
           x: 600,
           y: 650,
           width: 150,
@@ -100,7 +100,7 @@
           textSize: 28,
           text: "Title Screen",
         };
-        var diffSelectBtn = {
+        let diffSelectBtn = {
           x: 600,
           y: 650,
           width: 150,
@@ -110,7 +110,7 @@
           textSize: 20,
           text: "Difficulty Select",
         };
-        var diffEastBtn = {
+        let diffEastBtn = {
           x: 100,
           y: 600,
           width: 150,
@@ -120,7 +120,7 @@
           textSize: 30,
           text: "Easy",
         };
-        var diffNormalBtn = {
+        let diffNormalBtn = {
           x: 350,
           y: 600,
           width: 150,
@@ -130,7 +130,7 @@
           textSize: 30,
           text: "Normal",
         };
-        var diffHardBtn = {
+        let diffHardBtn = {
           x: 600,
           y: 600,
           width: 150,
@@ -140,7 +140,7 @@
           textSize: 30,
           text: "Hard",
         };
-        var speedrunTimerBtn = {
+        let speedrunTimerBtn = {
           x: 50,
           y: 650,
           width: 150,
@@ -173,7 +173,7 @@
         };
         function playerHitbox(wall) { // Player Hitbox
           if (isPlaying === true) {
-            var Hitbox = { // True player hitbox, seperate from model
+            let Hitbox = { // True player hitbox, seperate from model
               x: mouseX - 20,
               y: mouseY - 20,
               width: 40,
@@ -191,7 +191,7 @@
         };
         function winHitbox(win) { // The same player hitbox function, but for the win boxdue to technicallities it needs to be seperate.
           if (isPlaying === true) {
-            var HitboxTwo = {
+            let HitboxTwo = {
               x: mouseX - 20,
               y: mouseY - 20,
               width: 40,
@@ -434,7 +434,7 @@
           winHitbox(win1);
         };
 
-        var LevelOneWallsList = [
+        let LevelOneWallsList = [
           {x: 0, y: 0, width: 250, height: 100},
           {x: 0, y: 400, width: 650, height: 150},
           {x: 500, y: 690, width: 900, height: 300},
@@ -445,7 +445,7 @@
           {x: 775, y: 0, width: 50, height: 800},
           {x: 0, y: 760, width: 800, height: 40}
         ];
-        var win1 = {x: 250,y: 0,width: 150,height: 100}
+        let win1 = {x: 250,y: 0,width: 150,height: 100}
 
         function level2() {
           scene = 4;
@@ -458,7 +458,7 @@
             playerHitbox(LevelTwoWalls[i]);
           };
         };
-        var LevelTwoWalls = [
+        let LevelTwoWalls = [
           {x: 0, y: 0, width: 250, height: 410},
           {x: 0, y: 350, width: 650, height: 70},
           {x: 400, y: 0, width: 150, height: 250},
@@ -472,7 +472,7 @@
           {x: 770, y: 0, width: 30, height: 800},
           {x: 0, y:0, width: 800, height: 30},
         ];
-        var win2 = {x: 690,y: 585,width: 80,height: 100};
+        let win2 = {x: 690,y: 585,width: 80,height: 100};
 
         function level3() {
           scene = 5;
@@ -486,7 +486,7 @@
           };
         };
 
-        var LevelThreeWalls = [
+        let LevelThreeWalls = [
           {x: 350, y: 685, width: 450, height: 20},
           {x: 200, y: 400, width: 150, height: 305},
           {x: 450, y: 500, width: 400, height: 85},
@@ -499,7 +499,7 @@
           {x: 0, y: 780, width: 800, height: 25},
           {x: 770, y: 0, width: 30, height: 800}
         ];
-        var win3 = {x: 690,y: 705 ,width: 80,height: 75};
+        let win3 = {x: 690,y: 705 ,width: 80,height: 75};
 
         function level4() {
           scene = 6;
@@ -513,7 +513,7 @@
           };
         };
 
-        var LevelFourWalls = [
+        let LevelFourWalls = [
           {x: 500, y: 690, width: 300, height: 14},
           {x: 0, y: 690, width: 375, height: 110},
           {x: 400, y: 550, width: 250, height: 50},
@@ -527,7 +527,7 @@
           {x: 790, y: 0, width: 10, height: 800},
           {x: 0, y: 785, width: 800, height: 20},
         ];
-        var win4 = {x: 0,y: 150,width: 80,height: 100};
+        let win4 = {x: 0,y: 150,width: 80,height: 100};
 
         function level5() {
           noStroke();
@@ -541,7 +541,7 @@
           };
         };
 
-        var LevelFiveWalls = [
+        let LevelFiveWalls = [
           {x: 0, y: 0, width: 800, height: 150},
           {x: 0, y: 250, width: 675, height:40},
           {x: 100, y: 375, width: 700, height: 40},
@@ -552,8 +552,8 @@
           {x: 0, y: 0, width: 10, height: 800},
           {x: 0, y: 790, width: 800, height: 10}
         ];
-        var win5 = {x: 325, y: 710, width: 70, height: 80};
-        var win5H = {x: 325, y: 710, width: 60, height: 70};
+        let win5 = {x: 325, y: 710, width: 70, height: 80};
+        let win5H = {x: 325, y: 710, width: 60, height: 70};
 
         function level6() {
           noStroke();
@@ -567,7 +567,7 @@
           };
         };
 
-        var LevelSixWalls = [
+        let LevelSixWalls = [
           {x: 300, y: 500, width: 25, height: 300},
           {x: 450, y: 500, width: 25, height: 300},
           {x: 150, y: 350, width: 500, height: 30},
@@ -582,7 +582,7 @@
           {x: 0, y: 780, width: 800, height: 20},
           {x: 0, y: 0, width: 800, height: 30}
         ];
-        var win6 = {x: 325, y: 30, width: 125, height: 80};
+        let win6 = {x: 325, y: 30, width: 125, height: 80};
 
         function level7() {
           noStroke();
@@ -596,7 +596,7 @@
           };
         };
 
-        var LevelSevenWalls = [
+        let LevelSevenWalls = [
           {x: 0, y: 0, width: 325, height: 100},
           {x: 100, y: 200, width: 600, height: 40},
           {x: 450, y: 375, width: 250, height: 325},
@@ -609,8 +609,8 @@
           {x: 450, y: 0, width: 250, height: 100},
           {x: 0, y: 0, width: 800, height: 30},
         ];
-        var win7 = {x: 700, y: 20, width: 90, height: 80};
-        var win7H = {x: 700, y: 20, width: 90, height: 30};
+        let win7 = {x: 700, y: 20, width: 90, height: 80};
+        let win7H = {x: 700, y: 20, width: 90, height: 30};
 
         function level8() {
           noStroke();
@@ -624,7 +624,7 @@
           };
         };
 
-        var LevelEightWalls = [
+        let LevelEightWalls = [
           {x: 150, y: 110, width: 650, height: 15},
           {x: 150, y: 110, width: 50, height: 265},
           {x: 0, y: 450, width: 700, height: 75},
@@ -637,8 +637,8 @@
           {x: 0, y: 780, width: 800, height: 20},
           {x: 0, y: 0, width: 30, height: 800}
         ];
-        var win8 = {x: 30, y: 525, width: 100, height: 75};
-        var win8H = {x: 30, y:525, width: 40, height: 75};
+        let win8 = {x: 30, y: 525, width: 100, height: 75};
+        let win8H = {x: 30, y:525, width: 40, height: 75};
 
         function level9() {
           noStroke();
@@ -651,7 +651,7 @@
             playerHitbox(LevelNineWalls[i]);
           };
         };
-        var LevelNineWalls = [
+        let LevelNineWalls = [
           {x: 120, y: 80, width: 20, height: 750},
           {x: 120, y: 80, width: 575, height: 30},
           {x: 225, y: 200, width: 575, height: 150},
@@ -664,7 +664,7 @@
           {x: 790, y: 0, width: 10, height: 800},
           {x: 0, y: 0, width: 20, height: 800}
         ];
-        var win9 = {x: 700, y: 350, width: 90, height: 75};
+        let win9 = {x: 700, y: 350, width: 90, height: 75};
 
         function level10() {
           textAlign(LEFT, TOP);
@@ -681,9 +681,9 @@
           textSize(30);
           text("Go to the left to view credits", 50, 100);
         };
-        var Jw1 = {x: 0, y: 0, width: 800, height: 300};
-        var Jw2 = {x: 0, y: 500, width: 800, height: 300};
-        var win10 = {x: 0, y: 300, width: 100, height: 200};
+        let Jw1 = {x: 0, y: 0, width: 800, height: 300};
+        let Jw2 = {x: 0, y: 500, width: 800, height: 300};
+        let win10 = {x: 0, y: 300, width: 100, height: 200};
 
         function Credits() {
           isPlaying = false;
@@ -718,7 +718,7 @@
 
     // Scenes 0-2 are menu, scenes 3 to 12 are game levels, scene 13 is credits. 666 is game over.
     // function mouseclicked() & function draw() do not behave the same as mouseclicked = function() and draw = function()
-    var canvas = document.getElementById("mycanvas"); 
-    var processingInstance = new Processing(canvas, programCode); 
+    let canvas = document.getElementById("mycanvas"); 
+    let processingInstance = new Processing(canvas, programCode); 
   </script>
 </html>
